@@ -341,6 +341,66 @@
             font-family: 'Fredoka One', cursive;
         }
         
+        /* 
+        ============================================
+        NOTIFICATION BADGE
+        ============================================
+        Shows count of new activity in the header
+        */
+        .notification-badge {
+            position: relative;
+            display: inline-block;
+        }
+        
+        .notification-badge .badge {
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            background: #FF6B35;  /* Bright orange for visibility */
+            color: white;
+            font-family: 'Press Start 2P', cursive;
+            font-size: 0.7em;
+            padding: 6px 10px;
+            border-radius: 50%;
+            min-width: 24px;
+            text-align: center;
+            box-shadow: 3px 3px 0px rgba(0, 0, 0, 0.3);
+            animation: pulse 2s infinite;
+        }
+        
+        /* Pulse animation for notification badge */
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.1);
+            }
+        }
+        
+        .notification-badge .badge.hidden {
+            display: none;
+        }
+        
+        /* Notification icon styling */
+        .notification-icon {
+            font-family: 'Press Start 2P', cursive;
+            font-size: 0.9em;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: #FFD700;
+            background: #556B2F;
+            padding: 12px 20px;
+            border-radius: 50px;
+            box-shadow: 4px 4px 0px #00D9FF;
+            text-transform: uppercase;
+        }
+        
+        .notification-icon:hover {
+            transform: translate(2px, 2px);
+            box-shadow: 2px 2px 0px #00D9FF;
+        }
+        
         /* Decorative wavy divider */
         .wavy-divider {
             height: 15px;
@@ -409,7 +469,14 @@
                     <h1>the family archives</h1>
                     <p>hey there, <span id="currentUser"></span>!</p>
                 </div>
-                <button class="logout-btn" onclick="logout()">logout</button>
+                <div style="display: flex; gap: 15px; align-items: center;">
+                    <!-- Notification button with badge -->
+                    <div class="notification-badge" onclick="clearNotifications()">
+                        <span class="notification-icon">updates</span>
+                        <span id="notificationBadge" class="badge hidden">0</span>
+                    </div>
+                    <button class="logout-btn" onclick="logout()">logout</button>
+                </div>
             </div>
             
             <!-- Create new post -->
@@ -463,6 +530,93 @@
     </script>
 
     <script>
+        // 
+        // ============================================
+        // NOTIFICATION SYSTEM
+        // ============================================
+        // Tracks new posts, comments, and reactions since last visit
+        //
+        
+        /**
+         * Get the timestamp of when user last checked notifications
+         */
+        function getLastChecked() {
+            const lastChecked = localStorage.getItem(`lastChecked_${getCurrentUser()}`);
+            return lastChecked ? new Date(lastChecked) : new Date();
+        }
+        
+        /**
+         * Update the last checked timestamp to now
+         */
+        function updateLastChecked() {
+            localStorage.setItem(`lastChecked_${getCurrentUser()}`, new Date().toISOString());
+        }
+        
+        /**
+         * Clear notifications (mark as read)
+         */
+        function clearNotifications() {
+            updateLastChecked();
+            document.getElementById('notificationBadge').classList.add('hidden');
+            document.getElementById('notificationBadge').textContent = '0';
+        }
+        
+        /**
+         * Count new activity since last check
+         * Called whenever posts are displayed
+         */
+        function countNewActivity(posts) {
+            const currentUser = getCurrentUser();
+            const lastChecked = getLastChecked();
+            let newCount = 0;
+            
+            posts.forEach(post => {
+                // Don't count your own posts
+                if (post.author === currentUser) {
+                    return;
+                }
+                
+                // Count new posts
+                if (post.timestamp?.toDate && post.timestamp.toDate() > lastChecked) {
+                    newCount++;
+                }
+                
+                // Count new reactions on your posts
+                if (post.author === currentUser && post.reactions) {
+                    Object.entries(post.reactions).forEach(([user, emoji]) => {
+                        if (user !== currentUser) {
+                            // We can't easily track when reactions were added without changing data structure
+                            // So we'll just count posts/comments for now
+                        }
+                    });
+                }
+                
+                // Count new comments
+                if (post.comments) {
+                    post.comments.forEach(comment => {
+                        // Don't count your own comments
+                        if (comment.author === currentUser) {
+                            return;
+                        }
+                        
+                        // Count comments on your posts OR replies to your comments
+                        if (post.author === currentUser && comment.timestamp?.toDate && comment.timestamp.toDate() > lastChecked) {
+                            newCount++;
+                        }
+                    });
+                }
+            });
+            
+            // Update badge
+            const badge = document.getElementById('notificationBadge');
+            if (newCount > 0) {
+                badge.textContent = newCount > 9 ? '9+' : newCount;
+                badge.classList.remove('hidden');
+            } else {
+                badge.classList.add('hidden');
+            }
+        }
+        
         function getCurrentUser() {
             return localStorage.getItem('currentUser');
         }
@@ -558,6 +712,12 @@
             document.getElementById('loginScreen').classList.add('hidden');
             document.getElementById('mainApp').classList.remove('hidden');
             document.getElementById('currentUser').textContent = getCurrentUser();
+            
+            // Initialize last checked if it doesn't exist
+            if (!localStorage.getItem(`lastChecked_${getCurrentUser()}`)) {
+                updateLastChecked();
+            }
+            
             listenToPosts();
         }
         
@@ -603,141 +763,4 @@
         }
         
         function displayPosts(posts) {
-            const feed = document.getElementById('feed');
-            const currentUser = getCurrentUser();
-            
-            feed.innerHTML = '';
-            
-            if (posts.length === 0) {
-                feed.innerHTML = '<div class="loading">no posts yet. be the first to share!</div>';
-                return;
-            }
-            
-            posts.forEach(post => {
-                const postDiv = document.createElement('div');
-                postDiv.className = 'post pixel-corner';
-                
-                const reactions = post.reactions || {};
-                const reactionCounts = {};
-                Object.values(reactions).forEach(emoji => {
-                    reactionCounts[emoji] = (reactionCounts[emoji] || 0) + 1;
-                });
-                
-                let reactionsHTML = '';
-                ['👍', '❤️', '😂', '🎉'].forEach(emoji => {
-                    const count = reactionCounts[emoji] || 0;
-                    const isActive = reactions[currentUser] === emoji;
-                    const activeClass = isActive ? 'active' : '';
-                    reactionsHTML += `
-                        <button class="reaction-btn ${activeClass}" onclick="toggleReaction('${post.id}', '${emoji}')">
-                            ${emoji} ${count > 0 ? count : ''}
-                        </button>
-                    `;
-                });
-                
-                let commentsHTML = '<div class="comments">';
-                (post.comments || []).forEach(comment => {
-                    commentsHTML += `
-                        <div class="comment">
-                            <div class="comment-header">${comment.author}</div>
-                            <div class="comment-text">${comment.text}</div>
-                        </div>
-                    `;
-                });
-                
-                commentsHTML += `
-                    <div class="comment-form">
-                        <input type="text" id="comment-${post.id}" placeholder="write a comment...">
-                        <button onclick="addComment('${post.id}')">comment</button>
-                    </div>
-                </div>
-                `;
-                
-                const timestamp = post.timestamp?.toDate ? 
-                    post.timestamp.toDate().toLocaleString() : 
-                    'just now';
-                
-                postDiv.innerHTML = `
-                    <div class="post-header">
-                        <strong>${post.author}</strong>
-                        <span>${timestamp}</span>
-                    </div>
-                    <div class="post-content">${post.content}</div>
-                    <div class="reactions">
-                        ${reactionsHTML}
-                    </div>
-                    ${commentsHTML}
-                `;
-                
-                feed.appendChild(postDiv);
-            });
-        }
-        
-        async function toggleReaction(postId, emoji) {
-            const currentUser = getCurrentUser();
-            
-            try {
-                const postSnap = await getDocs(collection(db, 'posts'));
-                
-                let currentReactions = {};
-                postSnap.forEach((document) => {
-                    if (document.id === postId) {
-                        currentReactions = document.data().reactions || {};
-                    }
-                });
-                
-                if (currentReactions[currentUser] === emoji) {
-                    delete currentReactions[currentUser];
-                } else {
-                    currentReactions[currentUser] = emoji;
-                }
-                
-                const postRef = doc(db, 'posts', postId);
-                await updateDoc(postRef, {
-                    reactions: currentReactions
-                });
-                
-            } catch (error) {
-                console.error("Error toggling reaction:", error);
-            }
-        }
-        
-        async function addComment(postId) {
-            const commentInput = document.getElementById(`comment-${postId}`);
-            const commentText = commentInput.value.trim();
-            
-            if (!commentText) {
-                return;
-            }
-            
-            try {
-                const postSnap = await getDocs(collection(db, 'posts'));
-                
-                let currentComments = [];
-                postSnap.forEach((document) => {
-                    if (document.id === postId) {
-                        currentComments = document.data().comments || [];
-                    }
-                });
-                
-                currentComments.push({
-                    author: getCurrentUser(),
-                    text: commentText,
-                    timestamp: new Date()
-                });
-                
-                const postRef = doc(db, 'posts', postId);
-                await updateDoc(postRef, {
-                    comments: currentComments
-                });
-                
-                commentInput.value = '';
-                
-            } catch (error) {
-                console.error("Error adding comment:", error);
-            }
-        }
-    </script>
-    
-</body>
-</html>
+            const feed = documen
