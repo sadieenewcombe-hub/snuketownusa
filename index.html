@@ -229,10 +229,10 @@
         }
         
         /* 
-        DELETE BUTTON - Only shows on your own posts
-        Small, subtle button in post header
+        DELETE AND EDIT BUTTONS - Only show on your own posts
+        Small, subtle buttons in post header
         */
-        .delete-btn {
+        .post-action-btn {
             background: #D2691E;
             color: white;
             font-family: 'VT323', monospace;
@@ -246,9 +246,39 @@
             margin-left: 10px;
         }
         
-        .delete-btn:hover {
+        .post-action-btn:hover {
             background: #8B4513;
             transform: scale(1.05);
+        }
+        
+        /* Edit button gets a different color */
+        .edit-btn {
+            background: #CD853F;
+            border-color: #D2691E;
+        }
+        
+        .edit-btn:hover {
+            background: #D2691E;
+        }
+        
+        /* Editing mode styles */
+        .edit-textarea {
+            width: 100%;
+            min-height: 100px;
+            padding: 15px;
+            margin: 10px 0;
+            border: 3px solid #00D9FF;
+            border-radius: 10px;
+            font-family: 'VT323', monospace;
+            font-size: 1.4em;
+            background: #FFF8DC;
+            resize: vertical;
+        }
+        
+        .edit-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
         }
         
         .post-content {
@@ -320,6 +350,27 @@
             color: #333;
             font-size: 1.3em;
             line-height: 1.5;
+        }
+        
+        /* Delete button for comments */
+        .comment-delete-btn {
+            background: #D2691E;
+            color: white;
+            font-family: 'VT323', monospace;
+            font-size: 0.9em;
+            padding: 3px 10px;
+            border-radius: 10px;
+            border: 2px solid #8B4513;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 1px 1px 0px rgba(0, 0, 0, 0.2);
+            margin-left: 10px;
+            display: inline-block;
+        }
+        
+        .comment-delete-btn:hover {
+            background: #8B4513;
+            transform: scale(1.05);
         }
         
         .comment-form {
@@ -585,11 +636,34 @@
          * Clear notifications (mark as read)
          */
         function clearNotifications() {
-            updateLastChecked();
             const badge = document.getElementById('notificationBadge');
+            const hasNotifications = badge && !badge.classList.contains('hidden');
+            
+            // Update the last checked timestamp
+            updateLastChecked();
+            
+            // Clear the badge if it exists
             if (badge) {
                 badge.classList.add('hidden');
                 badge.textContent = '0';
+            }
+            
+            // Give user feedback
+            if (hasNotifications) {
+                // Flash the button to show it worked
+                const icon = document.querySelector('.notification-icon');
+                if (icon) {
+                    icon.style.opacity = '0.5';
+                    setTimeout(() => { icon.style.opacity = '1'; }, 200);
+                }
+            } else {
+                // Show a brief message if there were no notifications
+                const icon = document.querySelector('.notification-icon');
+                if (icon) {
+                    const originalText = icon.textContent;
+                    icon.textContent = 'all caught up!';
+                    setTimeout(() => { icon.textContent = originalText; }, 1500);
+                }
             }
         }
         
@@ -831,10 +905,19 @@
                 });
                 
                 let commentsHTML = '<div class="comments">';
-                (post.comments || []).forEach(comment => {
+                (post.comments || []).forEach((comment, index) => {
+                    // Show delete button if: (1) you wrote the comment OR (2) it's your post
+                    const canDelete = comment.author === currentUser || post.author === currentUser;
+                    const deleteBtn = canDelete 
+                        ? `<button class="comment-delete-btn" onclick="deleteComment('${post.id}', ${index})">delete</button>` 
+                        : '';
+                    
                     commentsHTML += `
                         <div class="comment">
-                            <div class="comment-header">${comment.author}</div>
+                            <div class="comment-header">
+                                ${comment.author}
+                                ${deleteBtn}
+                            </div>
                             <div class="comment-text">${comment.text}</div>
                         </div>
                     `;
@@ -842,7 +925,7 @@
                 
                 commentsHTML += `
                     <div class="comment-form">
-                        <input type="text" id="comment-${post.id}" placeholder="write a comment...">
+                        <input type="text" id="comment-${post.id}" placeholder="write a comment..." onkeypress="handleCommentKeyPress(event, '${post.id}')">
                         <button onclick="addComment('${post.id}')">comment</button>
                     </div>
                 </div>
@@ -852,9 +935,10 @@
                     post.timestamp.toDate().toLocaleString() : 
                     'just now';
                 
-                // Add delete button if this is the current user's post
-                const deleteButton = post.author === currentUser 
-                    ? `<button class="delete-btn" onclick="deletePost('${post.id}')">delete</button>` 
+                // Add edit and delete buttons if this is the current user's post
+                const actionButtons = post.author === currentUser 
+                    ? `<button class="post-action-btn edit-btn" onclick="editPost('${post.id}')">edit</button>
+                       <button class="post-action-btn" onclick="deletePost('${post.id}')">delete</button>` 
                     : '';
                 
                 postDiv.innerHTML = `
@@ -862,10 +946,10 @@
                         <strong>${post.author}</strong>
                         <div>
                             <span>${timestamp}</span>
-                            ${deleteButton}
+                            ${actionButtons}
                         </div>
                     </div>
-                    <div class="post-content">${post.content}</div>
+                    <div class="post-content" id="post-content-${post.id}">${post.content}</div>
                     <div class="reactions">
                         ${reactionsHTML}
                     </div>
@@ -907,6 +991,76 @@
         
         //
         // ============================================
+        // EDIT POST FUNCTION
+        // ============================================
+        //
+        
+        /**
+         * EDIT A POST
+         * Allows user to edit their own post content
+         */
+        async function editPost(postId) {
+            const contentDiv = document.getElementById(`post-content-${postId}`);
+            if (!contentDiv) return;
+            
+            // Get current content
+            const currentContent = contentDiv.textContent;
+            
+            // Replace content div with textarea
+            contentDiv.innerHTML = `
+                <textarea class="edit-textarea" id="edit-textarea-${postId}">${currentContent}</textarea>
+                <div class="edit-actions">
+                    <button onclick="saveEdit('${postId}')">save</button>
+                    <button onclick="cancelEdit('${postId}', \`${currentContent.replace(/`/g, '\\`')}\`)">cancel</button>
+                </div>
+            `;
+            
+            // Focus the textarea
+            document.getElementById(`edit-textarea-${postId}`).focus();
+        }
+        
+        /**
+         * SAVE EDITED POST
+         * Saves the edited content to Firebase
+         */
+        async function saveEdit(postId) {
+            const textarea = document.getElementById(`edit-textarea-${postId}`);
+            const newContent = textarea.value.trim();
+            
+            if (!newContent) {
+                alert('post cannot be empty!');
+                return;
+            }
+            
+            try {
+                const postRef = doc(db, 'posts', postId);
+                await updateDoc(postRef, {
+                    content: newContent,
+                    edited: true,
+                    editedAt: new Date()
+                });
+                
+                // Post will automatically update thanks to onSnapshot!
+                
+            } catch (error) {
+                console.error("Error editing post:", error);
+                alert('error saving edit. please try again.');
+            }
+        }
+        
+        /**
+         * CANCEL EDIT
+         * Restores original content without saving
+         */
+        function cancelEdit(postId, originalContent) {
+            const contentDiv = document.getElementById(`post-content-${postId}`);
+            if (contentDiv) {
+                contentDiv.innerHTML = originalContent;
+            }
+        }
+        
+        //
+        // ============================================
         // DELETE POST FUNCTION
         // ============================================
         //
@@ -938,6 +1092,17 @@
         // COMMENT FUNCTIONS
         // ============================================
         //
+        
+        /**
+         * HANDLE ENTER KEY IN COMMENT INPUT
+         * Submit comment when user presses Enter
+         */
+        function handleCommentKeyPress(event, postId) {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                addComment(postId);
+            }
+        }
         
         /**
          * ADD COMMENT
@@ -976,6 +1141,45 @@
                 
             } catch (error) {
                 console.error("Error adding comment:", error);
+            }
+        }
+        
+        /**
+         * DELETE COMMENT
+         * Removes a comment from a post
+         * Can delete if: (1) you wrote the comment OR (2) it's your post
+         */
+        async function deleteComment(postId, commentIndex) {
+            // Confirm before deleting
+            if (!confirm('delete this comment?')) {
+                return;
+            }
+            
+            try {
+                // Get current comments for this post
+                const postSnap = await getDocs(collection(db, 'posts'));
+                
+                let currentComments = [];
+                postSnap.forEach((document) => {
+                    if (document.id === postId) {
+                        currentComments = document.data().comments || [];
+                    }
+                });
+                
+                // Remove the comment at the specified index
+                currentComments.splice(commentIndex, 1);
+                
+                // Update in Firebase
+                const postRef = doc(db, 'posts', postId);
+                await updateDoc(postRef, {
+                    comments: currentComments
+                });
+                
+                // onSnapshot will automatically refresh the display!
+                
+            } catch (error) {
+                console.error("Error deleting comment:", error);
+                alert('error deleting comment. please try again.');
             }
         }
     </script>
