@@ -3,12 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>snuketownusa</title>
+    <title>The Family Archives</title>
+    
+    <!-- Import Google Fonts from brand guide -->
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=VT323&family=Press+Start+2P&display=swap" rel="stylesheet">
     
     <style>
         /* 
-        CSS STYLES - This controls how everything looks
-        You can change colors, sizes, spacing here
+        OPTION 1 BRAND GUIDE IMPLEMENTATION
+        70s groovy earth tones + Y2K digital accents
         */
         
         * {
@@ -18,179 +21,298 @@
         }
         
         body {
-            font-family: "OCR A Std", "Courier New", monospace;
-            background-color: #A0522D;  /* Sienna-colored background */
+            font-family: "VT323", monospace;
+            background: linear-gradient(135deg, #8B4513 0%, #D2691E 50%, #CD853F 100%);
+            background-attachment: fixed;
             padding: 20px;
-            max-width: 800px;  /* Keep content centered and not too wide */
+            min-height: 100vh;
+        }
+        
+        /* Scanline effect overlay for Y2K vibe */
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: repeating-linear-gradient(
+                0deg,
+                rgba(0, 0, 0, 0.05) 0px,
+                rgba(0, 0, 0, 0.05) 1px,
+                transparent 1px,
+                transparent 2px
+            );
+            pointer-events: none;
+            z-index: 1000;
+        }
+        
+        .container {
+            max-width: 900px;
             margin: 0 auto;
+            position: relative;
+            z-index: 1;
         }
         
-        h1 {
-            color: #333;
-            margin-bottom: 30px;
-            text-align: center;
-        }
-        
-        /* LOGIN FORM STYLES */
+        /* LOGIN SCREEN STYLES */
         .login-container {
-            background: white;
-            padding: 40px;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            max-width: 400px;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 50px 40px;
+            border-radius: 30px;
+            box-shadow: 8px 8px 0px #00D9FF, 0 10px 40px rgba(0,0,0,0.3);
+            max-width: 450px;
             margin: 100px auto;
+            border: 4px solid #556B2F;
         }
         
         .login-container h2 {
-            margin-bottom: 20px;
-            color: #333;
+            font-family: 'Fredoka One', cursive;
+            color: #D2691E;
+            font-size: 2.8em;
+            margin-bottom: 10px;
+            text-align: center;
+            text-shadow: 3px 3px 0px #00D9FF;
+        }
+        
+        .login-container p {
+            font-size: 1.4em;
+            color: #8B4513;
+            text-align: center;
+            margin-bottom: 30px;
         }
         
         input[type="text"],
         input[type="password"],
         textarea {
             width: 100%;
-            padding: 12px;
+            padding: 15px;
             margin: 10px 0;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            font-size: 14px;
+            border: 3px solid #8B4513;
+            border-radius: 10px;
+            font-family: 'VT323', monospace;
+            font-size: 1.3em;
+            background: #FFF8DC;
+            transition: all 0.3s;
+        }
+        
+        input[type="text"]:focus,
+        input[type="password"]:focus,
+        textarea:focus {
+            outline: none;
+            border-color: #00D9FF;
+            box-shadow: 0 0 0 3px rgba(0, 217, 255, 0.2);
         }
         
         button {
-            background-color: #4CAF50;  /* Green - change this color if you want */
-            color: white;
-            padding: 12px 24px;
+            background: #556B2F;
+            color: #FFD700;
+            padding: 15px 30px;
             border: none;
-            border-radius: 4px;
+            border-radius: 50px;
             cursor: pointer;
-            font-size: 14px;
-            margin: 5px 0;
+            font-family: 'Fredoka One', cursive;
+            font-size: 1.2em;
+            margin: 8px 5px;
+            box-shadow: 5px 5px 0px #00D9FF;
+            transition: all 0.2s;
+            text-transform: lowercase;
         }
         
         button:hover {
-            background-color: #45a049;  /* Slightly darker when you hover */
+            transform: translate(2px, 2px);
+            box-shadow: 3px 3px 0px #00D9FF;
+        }
+        
+        button:active {
+            transform: translate(5px, 5px);
+            box-shadow: 0px 0px 0px #00D9FF;
         }
         
         .logout-btn {
-            background-color: #f44336;  /* Red for logout */
+            background: #D2691E;
+            color: white;
         }
         
-        /* POST CREATION AREA */
+        /* HEADER BAR */
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 25px 30px;
+            border-radius: 25px;
+            margin-bottom: 30px;
+            border: 4px solid #8B4513;
+            box-shadow: 6px 6px 0px #00D9FF;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        
+        .header h1 {
+            font-family: 'Fredoka One', cursive;
+            color: #D2691E;
+            font-size: 2.5em;
+            margin: 0;
+            text-shadow: 3px 3px 0px #00D9FF;
+        }
+        
+        .header p {
+            font-size: 1.4em;
+            color: #556B2F;
+            margin: 5px 0 0 0;
+        }
+        
+        .header span {
+            color: #FFD700;
+            font-family: 'Press Start 2P', cursive;
+            font-size: 0.9em;
+        }
+        
+        /* CREATE POST SECTION */
         .create-post {
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 30px;
+            border-radius: 25px;
+            margin-bottom: 30px;
+            border: 4px solid #556B2F;
+            box-shadow: 6px 6px 0px #00D9FF;
+        }
+        
+        .create-post h3 {
+            font-family: 'Press Start 2P', cursive;
+            color: #FFD700;
+            font-size: 1em;
             margin-bottom: 20px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            text-transform: uppercase;
         }
         
         .create-post textarea {
-            min-height: 80px;
-            resize: vertical;  /* Let user resize height */
+            min-height: 100px;
+            resize: vertical;
+            font-size: 1.4em;
         }
         
-        /* INDIVIDUAL POST STYLES */
+        /* POST STYLES */
         .post {
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            background: rgba(255, 255, 255, 0.95);
+            padding: 30px;
+            border-radius: 25px;
+            margin-bottom: 25px;
+            border: 4px solid #CD853F;
+            box-shadow: 6px 6px 0px rgba(0, 217, 255, 0.6);
+            transition: all 0.3s;
+        }
+        
+        .post:hover {
+            transform: translateY(-2px);
+            box-shadow: 8px 8px 0px rgba(0, 217, 255, 0.8);
         }
         
         .post-header {
             display: flex;
             justify-content: space-between;
-            margin-bottom: 10px;
-            color: #666;
-            font-size: 14px;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px dashed #D2691E;
+        }
+        
+        .post-header strong {
+            font-family: 'Fredoka One', cursive;
+            color: #556B2F;
+            font-size: 1.5em;
+        }
+        
+        .post-header span {
+            font-size: 1.2em;
+            color: #8B4513;
         }
         
         .post-content {
-            margin: 15px 0;
+            margin: 20px 0;
             line-height: 1.6;
             color: #333;
+            font-size: 1.4em;
         }
         
-        /* REACTIONS (emoji buttons) */
+        /* REACTIONS */
         .reactions {
             display: flex;
-            gap: 10px;
-            margin: 15px 0;
-            padding: 10px 0;
-            border-top: 1px solid #eee;
+            gap: 12px;
+            margin: 20px 0;
+            padding: 15px 0;
+            border-top: 2px dashed #D2691E;
+            flex-wrap: wrap;
         }
         
         .reaction-btn {
-            background: #f0f0f0;
-            border: 1px solid #ddd;
-            padding: 8px 12px;
-            border-radius: 20px;
+            background: #FFF8DC;
+            border: 3px solid #CD853F;
+            padding: 10px 18px;
+            border-radius: 50px;
             cursor: pointer;
-            font-size: 16px;
+            font-size: 1.3em;
+            font-family: 'VT323', monospace;
+            transition: all 0.2s;
+            box-shadow: 3px 3px 0px rgba(139, 69, 19, 0.3);
         }
         
         .reaction-btn:hover {
-            background: #e0e0e0;
+            background: #FFD700;
+            transform: scale(1.05);
         }
         
         .reaction-btn.active {
-            background: #4CAF50;
+            background: #00D9FF;
             color: white;
-            border-color: #4CAF50;
+            border-color: #556B2F;
+            box-shadow: 4px 4px 0px #556B2F;
+            transform: scale(1.1);
         }
         
         /* COMMENTS SECTION */
         .comments {
-            margin-top: 15px;
-            padding-top: 15px;
-            border-top: 1px solid #eee;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 2px dashed #D2691E;
         }
         
         .comment {
-            background: #f9f9f9;
-            padding: 10px;
-            border-radius: 4px;
-            margin: 10px 0;
+            background: linear-gradient(135deg, #FFF8DC 0%, #FAEBD7 100%);
+            padding: 15px;
+            border-radius: 15px;
+            margin: 12px 0;
+            border: 2px solid #D2691E;
+            box-shadow: 3px 3px 0px rgba(0, 217, 255, 0.3);
         }
         
         .comment-header {
-            font-weight: bold;
-            color: #555;
-            font-size: 13px;
-            margin-bottom: 5px;
+            font-family: 'Fredoka One', cursive;
+            color: #8B4513;
+            font-size: 1.2em;
+            margin-bottom: 8px;
         }
         
         .comment-text {
             color: #333;
-            font-size: 14px;
+            font-size: 1.3em;
+            line-height: 1.5;
         }
         
         .comment-form {
-            margin-top: 10px;
+            margin-top: 15px;
+            display: flex;
+            gap: 10px;
         }
         
         .comment-form input {
-            width: calc(100% - 100px);
-            display: inline-block;
+            flex: 1;
+            margin: 0;
         }
         
         .comment-form button {
-            width: 90px;
-            display: inline-block;
-        }
-        
-        /* HEADER BAR when logged in */
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-            padding: 15px;
-            background: white;
-            border-radius: 8px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            flex-shrink: 0;
+            margin: 0;
+            font-size: 1em;
+            padding: 15px 25px;
         }
         
         .hidden {
@@ -198,77 +320,140 @@
         }
         
         .error {
-            color: #f44336;
-            font-size: 14px;
-            margin-top: 10px;
+            font-size: 1.3em;
+            margin-top: 15px;
+            text-align: center;
+            padding: 10px;
+            border-radius: 10px;
+        }
+        
+        .error:not(:empty) {
+            background: rgba(255, 0, 0, 0.1);
+            color: #8B0000;
+            border: 2px solid #8B0000;
         }
 
         .loading {
             text-align: center;
-            padding: 20px;
-            color: #666;
+            padding: 40px;
+            font-size: 1.5em;
+            color: #8B4513;
+            font-family: 'Fredoka One', cursive;
+        }
+        
+        /* Decorative wavy divider */
+        .wavy-divider {
+            height: 15px;
+            background: 
+                radial-gradient(circle at 10px -5px, transparent 12px, #D2691E 13px, transparent 13px) repeat-x,
+                radial-gradient(circle at 10px 25px, transparent 12px, #D2691E 13px, transparent 13px) repeat-x;
+            background-size: 20px 20px;
+            background-position: 0px 0px, 10px 0px;
+            margin: 20px 0;
+            opacity: 0.3;
+        }
+        
+        /* Pixel corners decoration */
+        .pixel-corner {
+            position: relative;
+        }
+        
+        .pixel-corner::before,
+        .pixel-corner::after {
+            content: "█";
+            position: absolute;
+            font-family: 'Press Start 2P', cursive;
+            font-size: 0.6em;
+            color: #00D9FF;
+        }
+        
+        .pixel-corner::before {
+            top: -8px;
+            left: -8px;
+        }
+        
+        .pixel-corner::after {
+            bottom: -8px;
+            right: -8px;
+        }
+        
+        /* Mobile responsive */
+        @media (max-width: 768px) {
+            .header {
+                text-align: center;
+            }
+            
+            .header h1 {
+                font-size: 2em;
+            }
+            
+            .header div {
+                width: 100%;
+                margin-bottom: 15px;
+            }
+            
+            button {
+                width: 100%;
+            }
+            
+            .comment-form {
+                flex-direction: column;
+            }
+            
+            .comment-form input,
+            .comment-form button {
+                width: 100%;
+            }
         }
     </style>
 </head>
 <body>
     
-    <!-- 
-    LOGIN SCREEN - shown when user is not logged in 
-    This section is hidden once user logs in
-    -->
-    <div id="loginScreen" class="login-container">
-        <h2>welcome to snuketownusa</h2>
-        <p style="color: #666; margin-bottom: 20px;">sign in to begin</p>
+    <!-- LOGIN SCREEN -->
+    <div id="loginScreen" class="login-container pixel-corner">
+        <h2>the family archives</h2>
+        <p>sign in to continue...</p>
         
         <input type="text" id="username" placeholder="username">
         <input type="password" id="password" placeholder="password">
-        <button onclick="login()">Login</button>
-        <button onclick="showRegister()">Create Account</button>
+        <button onclick="login()">enter</button>
+        <button onclick="showRegister()">create account</button>
         <div id="loginError" class="error"></div>
     </div>
     
-    <!-- 
-    MAIN APP - shown when user is logged in 
-    Contains post creation, feed, etc.
-    -->
+    <!-- MAIN APP -->
     <div id="mainApp" class="hidden">
-        
-        <!-- Header with user info and logout -->
-        <div class="header">
-            <div>
-                <h1>welcome to snuketownusa</h1>
-                <p style="color: #666;">hey, <span id="currentUser"></span>!</p>
+        <div class="container">
+            
+            <!-- Header -->
+            <div class="header pixel-corner">
+                <div>
+                    <h1>the family archives</h1>
+                    <p>hey there, <span id="currentUser"></span>!</p>
+                </div>
+                <button class="logout-btn" onclick="logout()">logout</button>
             </div>
-            <button class="logout-btn" onclick="logout()">logout</button>
-        </div>
-        
-        <!-- Create new post section -->
-        <div class="create-post">
-            <h3>post</h3>
-            <textarea id="newPostContent" placeholder="what's on your mind, buddy?"></textarea>
-            <button onclick="createPost()">Post Update</button>
-        </div>
-        
-        <!-- Feed where all posts appear -->
-        <div id="feed">
-            <div class="loading">loading posts...</div>
+            
+            <!-- Create new post -->
+            <div class="create-post pixel-corner">
+                <h3>// new entry</h3>
+                <textarea id="newPostContent" placeholder="what's happening in the family?"></textarea>
+                <button onclick="createPost()">post update</button>
+            </div>
+            
+            <!-- Feed -->
+            <div id="feed">
+                <div class="loading">loading the archives...</div>
+            </div>
+            
         </div>
     </div>
 
-    <!-- 
-    FIREBASE SETUP
-    These script tags import Firebase libraries from the internet
-    We're using version 9 of Firebase (the modular version)
-    -->
+    <!-- FIREBASE SETUP -->
     <script type="module">
-        // Import Firebase functions we need
         import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
         import { getFirestore, collection, addDoc, getDocs, updateDoc, doc, query, orderBy, onSnapshot } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
 
-        /*
-        FIREBASE CONFIGURATION
-        This connects your website to YOUR specific Firebase project
-        */
         const firebaseConfig = {
             apiKey: "AIzaSyBcLB4LtI3f7Xuxa4tMCxzcSG6Bi3XSaOI",
             authDomain: "snuketownusa.firebaseapp.com",
@@ -279,29 +464,9 @@
             measurementId: "G-JPKN8K2K9V"
         };
 
-        // Initialize Firebase
         const app = initializeApp(firebaseConfig);
-        
-        // Initialize Firestore (the database)
         const db = getFirestore(app);
 
-        /*
-        HOW FIREBASE FIRESTORE WORKS:
-        
-        Firestore is a "NoSQL database" - it stores data in "collections" and "documents"
-        Think of it like this:
-        - Collection = A folder (like "users" or "posts")
-        - Document = A file in that folder (like a specific user or post)
-        
-        We'll have two collections:
-        1. "users" - stores usernames and passwords
-        2. "posts" - stores all the posts, comments, reactions
-        
-        Unlike localStorage (which only saves on YOUR computer), 
-        Firestore saves to the cloud so EVERYONE sees the same data!
-        */
-
-        // Make Firebase functions available globally so our other functions can use them
         window.db = db;
         window.collection = collection;
         window.addDoc = addDoc;
@@ -312,7 +477,6 @@
         window.orderBy = orderBy;
         window.onSnapshot = onSnapshot;
 
-        // Start the app once Firebase is ready
         window.onload = function() {
             if (getCurrentUser()) {
                 showMainApp();
@@ -321,37 +485,24 @@
     </script>
 
     <script>
-        /*
-        JAVASCRIPT CODE - This makes everything interactive
-        Now using Firebase instead of localStorage!
-        */
-        
-        // Get current user from localStorage (we still store who's logged in locally)
         function getCurrentUser() {
             return localStorage.getItem('currentUser');
         }
         
-        /*
-        LOGIN FUNCTION
-        Now checks against Firebase database instead of localStorage
-        */
         async function login() {
             const username = document.getElementById('username').value.trim();
             const password = document.getElementById('password').value;
             const errorDiv = document.getElementById('loginError');
             
-            // Check if fields are empty
             if (!username || !password) {
-                errorDiv.textContent = 'Please enter username and password';
+                errorDiv.textContent = 'please enter username and password';
                 return;
             }
             
             try {
-                // Get all users from Firebase
                 const usersRef = collection(db, 'users');
                 const querySnapshot = await getDocs(usersRef);
                 
-                // Check if username and password match
                 let userFound = false;
                 querySnapshot.forEach((doc) => {
                     const user = doc.data();
@@ -361,35 +512,29 @@
                 });
                 
                 if (userFound) {
-                    // Success! Save current user and show main app
                     localStorage.setItem('currentUser', username);
                     showMainApp();
                     errorDiv.textContent = '';
                 } else {
-                    errorDiv.textContent = 'Invalid username or password';
+                    errorDiv.textContent = 'invalid username or password';
                 }
             } catch (error) {
                 console.error("Error logging in:", error);
-                errorDiv.textContent = 'Error logging in. Please try again.';
+                errorDiv.textContent = 'error logging in. please try again.';
             }
         }
         
-        /*
-        REGISTRATION FUNCTION
-        Now saves to Firebase instead of localStorage
-        */
         async function showRegister() {
             const username = document.getElementById('username').value.trim();
             const password = document.getElementById('password').value;
             const errorDiv = document.getElementById('loginError');
             
             if (!username || !password) {
-                errorDiv.textContent = 'Please enter username and password';
+                errorDiv.textContent = 'please enter username and password';
                 return;
             }
             
             try {
-                // Check if username already exists
                 const usersRef = collection(db, 'users');
                 const querySnapshot = await getDocs(usersRef);
                 
@@ -401,32 +546,28 @@
                 });
                 
                 if (usernameExists) {
-                    errorDiv.textContent = 'Username already exists';
+                    errorDiv.textContent = 'username already exists';
                     return;
                 }
                 
-                // Create new user in Firebase
                 await addDoc(collection(db, 'users'), {
                     username: username,
                     password: password,
                     createdAt: new Date()
                 });
                 
-                errorDiv.textContent = '';
-                errorDiv.style.color = '#4CAF50';
-                errorDiv.textContent = 'Account created! You can now login.';
+                errorDiv.textContent = 'account created! you can now login.';
+                errorDiv.style.color = '#556B2F';
+                errorDiv.style.background = 'rgba(85, 107, 47, 0.1)';
+                errorDiv.style.border = '2px solid #556B2F';
                 
-                // Clear password field
                 document.getElementById('password').value = '';
             } catch (error) {
                 console.error("Error creating account:", error);
-                errorDiv.textContent = 'Error creating account. Please try again.';
+                errorDiv.textContent = 'error creating account. please try again.';
             }
         }
         
-        /*
-        LOGOUT FUNCTION
-        */
         function logout() {
             localStorage.removeItem('currentUser');
             document.getElementById('loginScreen').classList.remove('hidden');
@@ -435,102 +576,75 @@
             document.getElementById('password').value = '';
         }
         
-        /*
-        SHOW MAIN APP
-        Switches from login screen to main app
-        */
         function showMainApp() {
             document.getElementById('loginScreen').classList.add('hidden');
             document.getElementById('mainApp').classList.remove('hidden');
             document.getElementById('currentUser').textContent = getCurrentUser();
-            listenToPosts(); // Start listening for real-time updates!
+            listenToPosts();
         }
         
-        /*
-        CREATE A NEW POST
-        Now saves to Firebase!
-        */
         async function createPost() {
             const content = document.getElementById('newPostContent').value.trim();
             
             if (!content) {
-                alert('Please write something!');
+                alert('please write something!');
                 return;
             }
             
             try {
-                // Add new post to Firebase
                 await addDoc(collection(db, 'posts'), {
                     author: getCurrentUser(),
                     content: content,
                     timestamp: new Date(),
-                    reactions: {},  // Object to store reactions
-                    comments: []    // Array to store comments
+                    reactions: {},
+                    comments: []
                 });
                 
-                // Clear the text box
                 document.getElementById('newPostContent').value = '';
-                
-                // No need to manually refresh - onSnapshot will auto-update!
                 
             } catch (error) {
                 console.error("Error creating post:", error);
-                alert('Error creating post. Please try again.');
+                alert('error creating post. please try again.');
             }
         }
         
-        /*
-        LISTEN TO POSTS IN REAL-TIME
-        This is the magic of Firebase! 
-        onSnapshot listens for changes and automatically updates the page
-        whenever anyone adds/edits a post - no refresh needed!
-        */
         function listenToPosts() {
             const postsRef = collection(db, 'posts');
             const q = query(postsRef, orderBy('timestamp', 'desc'));
             
-            // onSnapshot fires every time the data changes
             onSnapshot(q, (querySnapshot) => {
                 const posts = [];
                 querySnapshot.forEach((doc) => {
                     posts.push({
-                        id: doc.id,  // Firebase document ID
-                        ...doc.data()  // All the post data
+                        id: doc.id,
+                        ...doc.data()
                     });
                 });
                 displayPosts(posts);
             });
         }
         
-        /*
-        DISPLAY ALL POSTS
-        Same as before, but now receives posts from Firebase
-        */
         function displayPosts(posts) {
             const feed = document.getElementById('feed');
             const currentUser = getCurrentUser();
             
-            // Clear existing posts
             feed.innerHTML = '';
             
             if (posts.length === 0) {
-                feed.innerHTML = '<div class="loading">No posts yet. Be the first to share!</div>';
+                feed.innerHTML = '<div class="loading">no posts yet. be the first to share!</div>';
                 return;
             }
             
-            // Create HTML for each post
             posts.forEach(post => {
                 const postDiv = document.createElement('div');
-                postDiv.className = 'post';
+                postDiv.className = 'post pixel-corner';
                 
-                // Count reactions
                 const reactions = post.reactions || {};
                 const reactionCounts = {};
                 Object.values(reactions).forEach(emoji => {
                     reactionCounts[emoji] = (reactionCounts[emoji] || 0) + 1;
                 });
                 
-                // Build reactions display
                 let reactionsHTML = '';
                 ['👍', '❤️', '😂', '🎉'].forEach(emoji => {
                     const count = reactionCounts[emoji] || 0;
@@ -543,7 +657,6 @@
                     `;
                 });
                 
-                // Build comments display
                 let commentsHTML = '<div class="comments">';
                 (post.comments || []).forEach(comment => {
                     commentsHTML += `
@@ -554,21 +667,18 @@
                     `;
                 });
                 
-                // Add comment form
                 commentsHTML += `
                     <div class="comment-form">
-                        <input type="text" id="comment-${post.id}" placeholder="Write a comment...">
-                        <button onclick="addComment('${post.id}')">Comment</button>
+                        <input type="text" id="comment-${post.id}" placeholder="write a comment...">
+                        <button onclick="addComment('${post.id}')">comment</button>
                     </div>
                 </div>
                 `;
                 
-                // Format timestamp
                 const timestamp = post.timestamp?.toDate ? 
                     post.timestamp.toDate().toLocaleString() : 
-                    'Just now';
+                    'just now';
                 
-                // Put it all together
                 postDiv.innerHTML = `
                     <div class="post-header">
                         <strong>${post.author}</strong>
@@ -585,16 +695,10 @@
             });
         }
         
-        /*
-        TOGGLE REACTION
-        Now updates Firebase
-        */
         async function toggleReaction(postId, emoji) {
             const currentUser = getCurrentUser();
             
             try {
-                // Get the current post data
-                const postRef = doc(db, 'posts', postId);
                 const postSnap = await getDocs(collection(db, 'posts'));
                 
                 let currentReactions = {};
@@ -604,31 +708,24 @@
                     }
                 });
                 
-                // Toggle the reaction
                 if (currentReactions[currentUser] === emoji) {
                     delete currentReactions[currentUser];
                 } else {
                     currentReactions[currentUser] = emoji;
                 }
                 
-                // Update in Firebase
+                const postRef = doc(db, 'posts', postId);
                 await updateDoc(postRef, {
                     reactions: currentReactions
                 });
-                
-                // onSnapshot will automatically refresh the display!
                 
             } catch (error) {
                 console.error("Error toggling reaction:", error);
             }
         }
         
-        /*
-        ADD COMMENT
-        Now saves to Firebase
-        */
         async function addComment(postId) {
-            const commentInput = document.getElementById(`comment-${postId}`);
+            const commentInput = document.getElementById(`comment-${post.id}`);
             const commentText = commentInput.value.trim();
             
             if (!commentText) {
@@ -636,7 +733,6 @@
             }
             
             try {
-                // Get current comments
                 const postSnap = await getDocs(collection(db, 'posts'));
                 
                 let currentComments = [];
@@ -646,23 +742,18 @@
                     }
                 });
                 
-                // Add new comment
                 currentComments.push({
                     author: getCurrentUser(),
                     text: commentText,
                     timestamp: new Date()
                 });
                 
-                // Update in Firebase
                 const postRef = doc(db, 'posts', postId);
                 await updateDoc(postRef, {
                     comments: currentComments
                 });
                 
-                // Clear input
                 commentInput.value = '';
-                
-                // onSnapshot will automatically refresh the display!
                 
             } catch (error) {
                 console.error("Error adding comment:", error);
