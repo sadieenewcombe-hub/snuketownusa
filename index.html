@@ -213,8 +213,9 @@
         .post-header {
             display: flex;
             justify-content: space-between;
-            margin-bottom: 10px;  /* Reduced from 15px */
-            padding-bottom: 8px;  /* Reduced from 10px */
+            align-items: center;  /* Vertically center */
+            margin-bottom: 10px;
+            padding-bottom: 8px;
             border-bottom: 2px dashed #D2691E;
         }
         
@@ -229,6 +230,14 @@
             color: #8B4513;
         }
         
+        /* Container for timestamp and action buttons */
+        .post-header-right {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            flex-wrap: nowrap;  /* Keep inline */
+        }
+        
         /* 
         DELETE AND EDIT BUTTONS - Only show on your own posts
         Small, subtle buttons in post header
@@ -237,14 +246,15 @@
             background: #D2691E;
             color: white;
             font-family: 'VT323', monospace;
-            font-size: 1em;
-            padding: 5px 12px;
+            font-size: 0.9em;  /* Smaller */
+            padding: 4px 10px;  /* More compact */
             border-radius: 15px;
             border: 2px solid #8B4513;
             cursor: pointer;
             transition: all 0.2s;
             box-shadow: 2px 2px 0px rgba(0, 0, 0, 0.2);
-            margin-left: 10px;
+            margin-left: 6px;  /* Tighter spacing */
+            white-space: nowrap;  /* Prevent text wrapping */
         }
         
         .post-action-btn:hover {
@@ -475,15 +485,19 @@
         /* Notification icon styling */
         .notification-icon {
             font-family: 'Press Start 2P', cursive;
-            font-size: 0.9em;
+            font-size: 0.75em;  /* Smaller */
             cursor: pointer;
             transition: all 0.2s;
             color: #FFD700;
             background: #556B2F;
-            padding: 12px 20px;
+            padding: 10px 16px;  /* More compact */
             border-radius: 50px;
             box-shadow: 4px 4px 0px #00D9FF;
             text-transform: uppercase;
+            white-space: nowrap;  /* Prevent wrapping */
+            overflow: hidden;
+            text-overflow: ellipsis;  /* Add ... if text is too long */
+            max-width: 120px;  /* Limit width */
         }
         
         .notification-icon:hover {
@@ -545,8 +559,23 @@
             }
             
             .notification-icon {
-                font-size: 0.7em;
-                padding: 10px 15px;
+                font-size: 0.6em;
+                padding: 8px 12px;
+                max-width: 100px;  /* Even more compact on mobile */
+            }
+            
+            /* Keep post action buttons inline on mobile */
+            .post-header strong {
+                font-size: 1.3em;
+            }
+            
+            .post-header span {
+                font-size: 1em;
+            }
+            
+            .post-action-btn {
+                font-size: 0.85em;
+                padding: 3px 8px;
             }
             
             .comment-form {
@@ -717,7 +746,7 @@
                 const icon = document.querySelector('.notification-icon');
                 if (icon) {
                     const originalText = icon.textContent;
-                    icon.textContent = 'all caught up!';
+                    icon.textContent = 'all set';  // Shorter message
                     setTimeout(() => { icon.textContent = originalText; }, 1500);
                 }
             }
@@ -1000,7 +1029,7 @@
                 postDiv.innerHTML = `
                     <div class="post-header">
                         <strong>${post.author}</strong>
-                        <div>
+                        <div class="post-header-right">
                             <span>${timestamp}</span>
                             ${actionButtons}
                         </div>
