@@ -44,7 +44,7 @@
                 transparent 2px
             );
             pointer-events: none;
-            z-index: 1000;
+            z-index: 9999;  /* Increased to ensure it's on top but doesn't block clicks */
         }
         
         .container {
@@ -63,6 +63,8 @@
             max-width: 450px;
             margin: 100px auto;
             border: 4px solid #556B2F;
+            position: relative;
+            z-index: 10;  /* Ensure it's above background elements */
         }
         
         .login-container h2 {
@@ -523,7 +525,9 @@
         window.onSnapshot = onSnapshot;
 
         window.onload = function() {
-            if (getCurrentUser()) {
+            // getCurrentUser is defined in the next script block
+            const currentUser = localStorage.getItem('currentUser');
+            if (currentUser) {
                 showMainApp();
             }
         };
@@ -763,4 +767,144 @@
         }
         
         function displayPosts(posts) {
-            const feed = documen
+            const feed = document.getElementById('feed');
+            const currentUser = getCurrentUser();
+            
+            // Count new activity for notifications
+            countNewActivity(posts);
+            
+            feed.innerHTML = '';
+            
+            if (posts.length === 0) {
+                feed.innerHTML = '<div class="loading">no posts yet. be the first to share!</div>';
+                return;
+            }
+            
+            posts.forEach(post => {
+                const postDiv = document.createElement('div');
+                postDiv.className = 'post pixel-corner';
+                
+                const reactions = post.reactions || {};
+                const reactionCounts = {};
+                Object.values(reactions).forEach(emoji => {
+                    reactionCounts[emoji] = (reactionCounts[emoji] || 0) + 1;
+                });
+                
+                let reactionsHTML = '';
+                ['👍', '❤️', '😂', '🎉'].forEach(emoji => {
+                    const count = reactionCounts[emoji] || 0;
+                    const isActive = reactions[currentUser] === emoji;
+                    const activeClass = isActive ? 'active' : '';
+                    reactionsHTML += `
+                        <button class="reaction-btn ${activeClass}" onclick="toggleReaction('${post.id}', '${emoji}')">
+                            ${emoji} ${count > 0 ? count : ''}
+                        </button>
+                    `;
+                });
+                
+                let commentsHTML = '<div class="comments">';
+                (post.comments || []).forEach(comment => {
+                    commentsHTML += `
+                        <div class="comment">
+                            <div class="comment-header">${comment.author}</div>
+                            <div class="comment-text">${comment.text}</div>
+                        </div>
+                    `;
+                });
+                
+                commentsHTML += `
+                    <div class="comment-form">
+                        <input type="text" id="comment-${post.id}" placeholder="write a comment...">
+                        <button onclick="addComment('${post.id}')">comment</button>
+                    </div>
+                </div>
+                `;
+                
+                const timestamp = post.timestamp?.toDate ? 
+                    post.timestamp.toDate().toLocaleString() : 
+                    'just now';
+                
+                postDiv.innerHTML = `
+                    <div class="post-header">
+                        <strong>${post.author}</strong>
+                        <span>${timestamp}</span>
+                    </div>
+                    <div class="post-content">${post.content}</div>
+                    <div class="reactions">
+                        ${reactionsHTML}
+                    </div>
+                    ${commentsHTML}
+                `;
+                
+                feed.appendChild(postDiv);
+            });
+        }
+        
+        async function toggleReaction(postId, emoji) {
+            const currentUser = getCurrentUser();
+            
+            try {
+                const postSnap = await getDocs(collection(db, 'posts'));
+                
+                let currentReactions = {};
+                postSnap.forEach((document) => {
+                    if (document.id === postId) {
+                        currentReactions = document.data().reactions || {};
+                    }
+                });
+                
+                if (currentReactions[currentUser] === emoji) {
+                    delete currentReactions[currentUser];
+                } else {
+                    currentReactions[currentUser] = emoji;
+                }
+                
+                const postRef = doc(db, 'posts', postId);
+                await updateDoc(postRef, {
+                    reactions: currentReactions
+                });
+                
+            } catch (error) {
+                console.error("Error toggling reaction:", error);
+            }
+        }
+        
+        async function addComment(postId) {
+            const commentInput = document.getElementById(`comment-${postId}`);
+            const commentText = commentInput.value.trim();
+            
+            if (!commentText) {
+                return;
+            }
+            
+            try {
+                const postSnap = await getDocs(collection(db, 'posts'));
+                
+                let currentComments = [];
+                postSnap.forEach((document) => {
+                    if (document.id === postId) {
+                        currentComments = document.data().comments || [];
+                    }
+                });
+                
+                currentComments.push({
+                    author: getCurrentUser(),
+                    text: commentText,
+                    timestamp: new Date()
+                });
+                
+                const postRef = doc(db, 'posts', postId);
+                await updateDoc(postRef, {
+                    comments: currentComments
+                });
+                
+                commentInput.value = '';
+                
+            } catch (error) {
+                console.error("Error adding comment:", error);
+            }
+        }
+    </script>
+    
+</body>
+</html>
