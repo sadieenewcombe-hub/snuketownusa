@@ -629,7 +629,7 @@
                     const isActive = reactions[currentUser] === emoji;
                     const activeClass = isActive ? 'active' : '';
                     reactionsHTML += `
-                        <button class="reaction-btn ${activeClass}" onclick="toggleReaction('${postId}', '${emoji}')">
+                        <button class="reaction-btn ${activeClass}" onclick="toggleReaction('${post.id}', '${emoji}')">
                             ${emoji} ${count > 0 ? count : ''}
                         </button>
                     `;
