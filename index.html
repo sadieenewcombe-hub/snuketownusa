@@ -391,6 +391,7 @@
             text-align: center;
             box-shadow: 3px 3px 0px rgba(0, 0, 0, 0.3);
             animation: pulse 2s infinite;
+            pointer-events: none;  /* Allow clicks to pass through to the button below */
         }
         
         /* Pulse animation for notification badge */
@@ -585,8 +586,11 @@
          */
         function clearNotifications() {
             updateLastChecked();
-            document.getElementById('notificationBadge').classList.add('hidden');
-            document.getElementById('notificationBadge').textContent = '0';
+            const badge = document.getElementById('notificationBadge');
+            if (badge) {
+                badge.classList.add('hidden');
+                badge.textContent = '0';
+            }
         }
         
         /**
