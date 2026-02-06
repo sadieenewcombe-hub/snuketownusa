@@ -703,7 +703,7 @@
         }
         
         async function addComment(postId) {
-            const commentInput = document.getElementById(`comment-${post.id}`);
+            const commentInput = document.getElementById(`comment-${postId}`);
             const commentText = commentInput.value.trim();
             
             if (!commentText) {
