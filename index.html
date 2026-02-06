@@ -228,6 +228,29 @@
             color: #8B4513;
         }
         
+        /* 
+        DELETE BUTTON - Only shows on your own posts
+        Small, subtle button in post header
+        */
+        .delete-btn {
+            background: #D2691E;
+            color: white;
+            font-family: 'VT323', monospace;
+            font-size: 1em;
+            padding: 5px 12px;
+            border-radius: 15px;
+            border: 2px solid #8B4513;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 2px 2px 0px rgba(0, 0, 0, 0.2);
+            margin-left: 10px;
+        }
+        
+        .delete-btn:hover {
+            background: #8B4513;
+            transform: scale(1.05);
+        }
+        
         .post-content {
             margin: 20px 0;
             line-height: 1.6;
@@ -499,7 +522,7 @@
     <!-- FIREBASE SETUP -->
     <script type="module">
         import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
-        import { getFirestore, collection, addDoc, getDocs, updateDoc, doc, query, orderBy, onSnapshot } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+        import { getFirestore, collection, addDoc, getDocs, updateDoc, deleteDoc, doc, query, orderBy, onSnapshot } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
 
         const firebaseConfig = {
             apiKey: "AIzaSyBcLB4LtI3f7Xuxa4tMCxzcSG6Bi3XSaOI",
@@ -519,6 +542,7 @@
         window.addDoc = addDoc;
         window.getDocs = getDocs;
         window.updateDoc = updateDoc;
+        window.deleteDoc = deleteDoc;
         window.doc = doc;
         window.query = query;
         window.orderBy = orderBy;
@@ -824,10 +848,18 @@
                     post.timestamp.toDate().toLocaleString() : 
                     'just now';
                 
+                // Add delete button if this is the current user's post
+                const deleteButton = post.author === currentUser 
+                    ? `<button class="delete-btn" onclick="deletePost('${post.id}')">delete</button>` 
+                    : '';
+                
                 postDiv.innerHTML = `
                     <div class="post-header">
                         <strong>${post.author}</strong>
-                        <span>${timestamp}</span>
+                        <div>
+                            <span>${timestamp}</span>
+                            ${deleteButton}
+                        </div>
                     </div>
                     <div class="post-content">${post.content}</div>
                     <div class="reactions">
@@ -869,6 +901,44 @@
             }
         }
         
+        //
+        // ============================================
+        // DELETE POST FUNCTION
+        // ============================================
+        //
+        
+        /**
+         * DELETE A POST
+         * Removes a post from Firebase (only works on your own posts)
+         */
+        async function deletePost(postId) {
+            // Confirm before deleting
+            if (!confirm('are you sure you want to delete this post?')) {
+                return;
+            }
+            
+            try {
+                const postRef = doc(db, 'posts', postId);
+                await deleteDoc(postRef);
+                
+                // Post will automatically disappear thanks to onSnapshot!
+                
+            } catch (error) {
+                console.error("Error deleting post:", error);
+                alert('error deleting post. please try again.');
+            }
+        }
+        
+        //
+        // ============================================
+        // COMMENT FUNCTIONS
+        // ============================================
+        //
+        
+        /**
+         * ADD COMMENT
+         * Adds a new comment to a post
+         */
         async function addComment(postId) {
             const commentInput = document.getElementById(`comment-${postId}`);
             const commentText = commentInput.value.trim();
