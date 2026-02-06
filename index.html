@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>welcome to snuketownusa</title>
+    <title>snuketownusa</title>
     
     <style>
         /* 
@@ -217,11 +217,11 @@
     This section is hidden once user logs in
     -->
     <div id="loginScreen" class="login-container">
-        <h2>Family Updates</h2>
-        <p style="color: #666; margin-bottom: 20px;">Sign in to share updates with family</p>
+        <h2>welcome to snuketownusa</h2>
+        <p style="color: #666; margin-bottom: 20px;">sign in to begin</p>
         
-        <input type="text" id="username" placeholder="Username">
-        <input type="password" id="password" placeholder="Password">
+        <input type="text" id="username" placeholder="username">
+        <input type="password" id="password" placeholder="password">
         <button onclick="login()">Login</button>
         <button onclick="showRegister()">Create Account</button>
         <div id="loginError" class="error"></div>
@@ -236,22 +236,22 @@
         <!-- Header with user info and logout -->
         <div class="header">
             <div>
-                <h1>Family Updates</h1>
-                <p style="color: #666;">Welcome, <span id="currentUser"></span>!</p>
+                <h1>welcome to snuketownusa</h1>
+                <p style="color: #666;">hey, <span id="currentUser"></span>!</p>
             </div>
-            <button class="logout-btn" onclick="logout()">Logout</button>
+            <button class="logout-btn" onclick="logout()">logout</button>
         </div>
         
         <!-- Create new post section -->
         <div class="create-post">
-            <h3>Share an Update</h3>
-            <textarea id="newPostContent" placeholder="What's happening with you?"></textarea>
+            <h3>post</h3>
+            <textarea id="newPostContent" placeholder="what's on your mind, buddy?"></textarea>
             <button onclick="createPost()">Post Update</button>
         </div>
         
         <!-- Feed where all posts appear -->
         <div id="feed">
-            <div class="loading">Loading posts...</div>
+            <div class="loading">loading posts...</div>
         </div>
     </div>
 
