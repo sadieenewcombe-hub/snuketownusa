@@ -465,7 +465,13 @@
             text-align: center;
             box-shadow: 3px 3px 0px rgba(0, 0, 0, 0.3);
             animation: pulse 2s infinite;
-            pointer-events: none;  /* Allow clicks to pass through to the button below */
+            cursor: pointer;
+            z-index: 10;
+        }
+        
+        .notification-badge .badge:hover {
+            background: #FF8C61;
+            transform: scale(1.1);
         }
         
         /* Pulse animation for notification badge */
@@ -482,27 +488,48 @@
             display: none;
         }
         
-        /* Notification icon styling */
+        /* Notification icon styling - Groovy text button */
         .notification-icon {
-            font-family: 'Press Start 2P', cursive;
-            font-size: 0.75em;  /* Smaller */
+            font-family: 'Fredoka One', cursive;
+            font-size: 1em;
             cursor: pointer;
-            transition: all 0.2s;
+            transition: all 0.3s;
             color: #FFD700;
-            background: #556B2F;
-            padding: 10px 16px;  /* More compact */
-            border-radius: 50px;
+            background: #D2691E;
+            padding: 12px 20px;
+            border-radius: 20px;
             box-shadow: 4px 4px 0px #00D9FF;
-            text-transform: uppercase;
-            white-space: nowrap;  /* Prevent wrapping */
-            overflow: hidden;
-            text-overflow: ellipsis;  /* Add ... if text is too long */
-            max-width: 120px;  /* Limit width */
+            border: 3px solid #8B4513;
+            position: relative;
+            display: inline-block;
+            text-transform: lowercase;
         }
         
         .notification-icon:hover {
             transform: translate(2px, 2px);
             box-shadow: 2px 2px 0px #00D9FF;
+        }
+        
+        .notification-icon:active {
+            transform: translate(4px, 4px);
+            box-shadow: 0px 0px 0px #00D9FF;
+        }
+        
+        /* Checkmark when notifications are enabled */
+        .notification-icon.enabled {
+            background: #556B2F;
+            color: #FFD700;
+        }
+        
+        .notification-icon.enabled::before {
+            content: '✓ ';
+            color: #00D9FF;
+        }
+        
+        /* Blocked state */
+        .notification-icon.blocked {
+            background: #8B4513;
+            opacity: 0.7;
         }
         
         /* Decorative wavy divider */
@@ -596,9 +623,8 @@
             }
             
             .notification-icon {
-                font-size: 0.6em;
-                padding: 8px 12px;
-                max-width: 100px;  /* Even more compact on mobile */
+                font-size: 0.85em;
+                padding: 10px 14px;
             }
             
             /* Keep post action buttons inline on mobile */
@@ -676,10 +702,12 @@
                     <p>hey there, <span id="currentUser"></span>!</p>
                 </div>
                 <div style="display: flex; gap: 15px; align-items: center;">
-                    <!-- Notification button with badge -->
-                    <div class="notification-badge" onclick="clearNotifications()">
-                        <span class="notification-icon">updates</span>
-                        <span id="notificationBadge" class="badge hidden">0</span>
+                    <!-- Notification button -->
+                    <div class="notification-badge">
+                        <button class="notification-icon" id="notificationMailbox" onclick="enableNotifications()" title="Click to enable notifications">
+                            notify me
+                        </button>
+                        <span id="notificationBadge" class="badge hidden" onclick="clearNotifications(); event.stopPropagation();">0</span>
                     </div>
                     <button class="logout-btn" onclick="logout()">logout</button>
                 </div>
@@ -755,32 +783,115 @@
         // ============================================
         
         /**
-         * Request notification permission and get FCM token
+         * Enable notifications when user clicks the button
+         * This is required for iOS - must be triggered by user interaction
          */
-        async function requestNotificationPermission() {
+        async function enableNotifications() {
+            const notifyBtn = document.getElementById('notificationMailbox');
+            
+            // If already enabled, just show a message
+            if (notifyBtn.classList.contains('enabled')) {
+                showNotificationToast('Already Enabled!', 'Notifications are working!');
+                return;
+            }
+            
             try {
                 const permission = await Notification.requestPermission();
                 
                 if (permission === 'granted') {
                     console.log('Notification permission granted.');
                     
+                    // Make sure service worker is registered first
+                    const registration = await navigator.serviceWorker.register('/firebase-messaging-sw.js');
+                    console.log('Service Worker registered:', registration);
+                    
+                    // Wait a moment for service worker to activate
+                    await navigator.serviceWorker.ready;
+                    
                     // Get FCM token
                     const token = await getToken(messaging, {
-                        vapidKey: 'BI7vvfGRUjdlt39dnT8PilqZNHNRTTQ1BaQwemgWM295MxllyHEc49zQz3E5KyGr3hwAToK-XUXG-ab8opwihaA'
+                        vapidKey: 'BI7vvfGRUjdlt39dnT8PilqZNHNRTTQ1BaQwemgWM295MxllyHEc49zQz3E5KyGr3hwAToK-XUXG-ab8opwihaA',
+                        serviceWorkerRegistration: registration
                     });
                     
                     if (token) {
                         console.log('FCM Token:', token);
                         await saveTokenToDatabase(token);
+                        
+                        // Update button to show enabled state
+                        updateNotificationButtonState('granted');
+                        
+                        // Show success message
+                        showNotificationToast('Notifications Enabled!', 'You\'ll get updates when family posts, comments, or reacts.');
+                        
                         return token;
                     } else {
                         console.log('No registration token available.');
+                        alert('Could not get notification token. Please try again.');
                     }
                 } else {
                     console.log('Notification permission denied.');
+                    updateNotificationButtonState('denied');
                 }
             } catch (error) {
-                console.error('Error getting notification permission:', error);
+                console.error('Error enabling notifications:', error);
+                alert('Error enabling notifications: ' + error.message);
+            }
+        }
+        
+        /**
+         * Update the notification button state based on permission
+         */
+        function updateNotificationButtonState(permission) {
+            const notifyBtn = document.getElementById('notificationMailbox');
+            
+            // Remove all state classes
+            notifyBtn.classList.remove('enabled', 'blocked');
+            
+            if (permission === 'granted') {
+                notifyBtn.classList.add('enabled');
+                notifyBtn.textContent = 'notifications on';
+                notifyBtn.title = 'Notifications enabled!';
+            } else if (permission === 'denied') {
+                notifyBtn.classList.add('blocked');
+                notifyBtn.textContent = 'notifications blocked';
+                notifyBtn.title = 'Notifications blocked - check browser settings';
+            } else {
+                // Default state
+                notifyBtn.textContent = 'notify me';
+                notifyBtn.title = 'Click to enable notifications';
+            }
+        }
+        
+        /**
+         * Request notification permission (checks status on page load)
+         */
+        async function requestNotificationPermission() {
+            // Check current permission status
+            const permission = Notification.permission;
+            
+            if (permission === 'granted') {
+                // Already granted, get token silently
+                try {
+                    // Make sure service worker is registered first
+                    const registration = await navigator.serviceWorker.register('/firebase-messaging-sw.js');
+                    await navigator.serviceWorker.ready;
+                    
+                    const token = await getToken(messaging, {
+                        vapidKey: 'BI7vvfGRUjdlt39dnT8PilqZNHNRTTQ1BaQwemgWM295MxllyHEc49zQz3E5KyGr3hwAToK-XUXG-ab8opwihaA',
+                        serviceWorkerRegistration: registration
+                    });
+                    
+                    if (token) {
+                        await saveTokenToDatabase(token);
+                        updateNotificationButtonState('granted');
+                    }
+                } catch (error) {
+                    console.error('Error getting token:', error);
+                }
+            } else {
+                // Update button to show current state
+                updateNotificationButtonState(permission);
             }
         }
         
@@ -884,6 +995,7 @@
         
         /**
          * Clear notifications (mark as read)
+         * Called when clicking the notification badge
          */
         function clearNotifications() {
             const badge = document.getElementById('notificationBadge');
@@ -898,22 +1010,9 @@
                 badge.textContent = '0';
             }
             
-            // Give user feedback
+            // Give user feedback with toast
             if (hasNotifications) {
-                // Flash the button to show it worked
-                const icon = document.querySelector('.notification-icon');
-                if (icon) {
-                    icon.style.opacity = '0.5';
-                    setTimeout(() => { icon.style.opacity = '1'; }, 200);
-                }
-            } else {
-                // Show a brief message if there were no notifications
-                const icon = document.querySelector('.notification-icon');
-                if (icon) {
-                    const originalText = icon.textContent;
-                    icon.textContent = 'all set';  // Shorter message
-                    setTimeout(() => { icon.textContent = originalText; }, 1500);
-                }
+                showNotificationToast('Caught up!', 'You\'re all up to date with family activity.');
             }
         }
         
