@@ -5,15 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>The Family Archives</title>
     
-    <!-- Import Google Fonts from brand guide -->
+    <!-- Import Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=VT323&family=Press+Start+2P&display=swap" rel="stylesheet">
     
     <style>
-        /* 
-        OPTION 1 BRAND GUIDE IMPLEMENTATION
-        70s groovy earth tones + Y2K digital accents
-        */
-        
         * {
             margin: 0;
             padding: 0;
@@ -24,11 +19,10 @@
             font-family: "VT323", monospace;
             background: linear-gradient(135deg, #8B4513 0%, #D2691E 50%, #CD853F 100%);
             background-attachment: fixed;
-            padding: 15px;  /* Reduced from 20px for mobile */
+            padding: 15px;
             min-height: 100vh;
         }
         
-        /* Scanline effect overlay for Y2K vibe */
         body::before {
             content: "";
             position: fixed;
@@ -44,7 +38,7 @@
                 transparent 2px
             );
             pointer-events: none;
-            z-index: 9999;  /* Increased to ensure it's on top but doesn't block clicks */
+            z-index: 9999;
         }
         
         .container {
@@ -54,7 +48,6 @@
             z-index: 1;
         }
         
-        /* LOGIN SCREEN STYLES */
         .login-container {
             background: rgba(255, 255, 255, 0.95);
             padding: 50px 40px;
@@ -64,7 +57,7 @@
             margin: 100px auto;
             border: 4px solid #556B2F;
             position: relative;
-            z-index: 10;  /* Ensure it's above background elements */
+            z-index: 10;
         }
         
         .login-container h2 {
@@ -108,14 +101,14 @@
         button {
             background: #556B2F;
             color: #FFD700;
-            padding: 12px 25px;  /* Slightly smaller */
+            padding: 12px 25px;
             border: none;
             border-radius: 50px;
             cursor: pointer;
             font-family: 'Fredoka One', cursive;
-            font-size: 1.1em;  /* Slightly smaller */
-            margin: 6px 3px;  /* Tighter spacing */
-            box-shadow: 4px 4px 0px #00D9FF;  /* Smaller shadow */
+            font-size: 1.1em;
+            margin: 6px 3px;
+            box-shadow: 4px 4px 0px #00D9FF;
             transition: all 0.2s;
             text-transform: lowercase;
         }
@@ -126,7 +119,7 @@
         }
         
         button:active {
-            transform: translate(4px, 4px);  /* Less dramatic */
+            transform: translate(4px, 4px);
             box-shadow: 0px 0px 0px #00D9FF;
         }
         
@@ -135,31 +128,30 @@
             color: white;
         }
         
-        /* HEADER BAR */
         .header {
             background: rgba(255, 255, 255, 0.95);
-            padding: 15px 20px;  /* Reduced padding */
-            border-radius: 20px;  /* Less rounded */
-            margin-bottom: 20px;  /* Less spacing */
-            border: 3px solid #8B4513;  /* Thinner border */
-            box-shadow: 4px 4px 0px #00D9FF;  /* Smaller shadow */
+            padding: 15px 20px;
+            border-radius: 20px;
+            margin-bottom: 20px;
+            border: 3px solid #8B4513;
+            box-shadow: 4px 4px 0px #00D9FF;
             display: flex;
             justify-content: space-between;
             align-items: center;
             flex-wrap: wrap;
-            gap: 10px;  /* Add gap for wrapped items */
+            gap: 10px;
         }
         
         .header h1 {
             font-family: 'Fredoka One', cursive;
             color: #D2691E;
-            font-size: 1.8em;  /* Smaller for mobile-first */
+            font-size: 1.8em;
             margin: 0;
-            text-shadow: 2px 2px 0px #00D9FF;  /* Smaller shadow */
+            text-shadow: 2px 2px 0px #00D9FF;
         }
         
         .header p {
-            font-size: 1.2em;  /* Smaller */
+            font-size: 1.2em;
             color: #556B2F;
             margin: 3px 0 0 0;
         }
@@ -167,53 +159,51 @@
         .header span {
             color: #FFD700;
             font-family: 'Press Start 2P', cursive;
-            font-size: 0.75em;  /* Smaller */
+            font-size: 0.75em;
         }
         
-        /* CREATE POST SECTION */
         .create-post {
             background: rgba(255, 255, 255, 0.95);
-            padding: 20px;  /* Reduced from 30px */
+            padding: 20px;
             border-radius: 20px;
             margin-bottom: 20px;
-            border: 3px solid #556B2F;  /* Thinner */
+            border: 3px solid #556B2F;
             box-shadow: 4px 4px 0px #00D9FF;
         }
         
         .create-post h3 {
             font-family: 'Press Start 2P', cursive;
             color: #FFD700;
-            font-size: 0.85em;  /* Smaller */
+            font-size: 0.85em;
             margin-bottom: 15px;
             text-transform: uppercase;
         }
         
         .create-post textarea {
-            min-height: 80px;  /* Reduced from 100px */
+            min-height: 80px;
             resize: vertical;
-            font-size: 1.3em;  /* Slightly smaller */
+            font-size: 1.3em;
         }
         
-        /* POST STYLES */
         .post {
             background: rgba(255, 255, 255, 0.95);
-            padding: 20px;  /* Reduced from 30px */
-            border-radius: 20px;  /* Slightly less rounded */
-            margin-bottom: 20px;  /* Reduced spacing */
-            border: 3px solid #CD853F;  /* Thinner border */
-            box-shadow: 4px 4px 0px rgba(0, 217, 255, 0.6);  /* Smaller shadow */
+            padding: 20px;
+            border-radius: 20px;
+            margin-bottom: 20px;
+            border: 3px solid #CD853F;
+            box-shadow: 4px 4px 0px rgba(0, 217, 255, 0.6);
             transition: all 0.3s;
         }
         
         .post:hover {
-            transform: translateY(-1px);  /* Less dramatic lift */
+            transform: translateY(-1px);
             box-shadow: 5px 5px 0px rgba(0, 217, 255, 0.8);
         }
         
         .post-header {
             display: flex;
             justify-content: space-between;
-            align-items: center;  /* Vertically center */
+            align-items: center;
             margin-bottom: 10px;
             padding-bottom: 8px;
             border-bottom: 2px dashed #D2691E;
@@ -230,31 +220,26 @@
             color: #8B4513;
         }
         
-        /* Container for timestamp and action buttons */
         .post-header-right {
             display: flex;
             align-items: center;
             gap: 4px;
-            flex-wrap: nowrap;  /* Keep inline */
+            flex-wrap: nowrap;
         }
         
-        /* 
-        DELETE AND EDIT BUTTONS - Only show on your own posts
-        Small, subtle buttons in post header
-        */
         .post-action-btn {
             background: #D2691E;
             color: white;
             font-family: 'VT323', monospace;
-            font-size: 0.9em;  /* Smaller */
-            padding: 4px 10px;  /* More compact */
+            font-size: 0.9em;
+            padding: 4px 10px;
             border-radius: 15px;
             border: 2px solid #8B4513;
             cursor: pointer;
             transition: all 0.2s;
             box-shadow: 2px 2px 0px rgba(0, 0, 0, 0.2);
-            margin-left: 6px;  /* Tighter spacing */
-            white-space: nowrap;  /* Prevent text wrapping */
+            margin-left: 6px;
+            white-space: nowrap;
         }
         
         .post-action-btn:hover {
@@ -262,7 +247,6 @@
             transform: scale(1.05);
         }
         
-        /* Edit button gets a different color */
         .edit-btn {
             background: #CD853F;
             border-color: #D2691E;
@@ -272,7 +256,6 @@
             background: #D2691E;
         }
         
-        /* Editing mode styles */
         .edit-textarea {
             width: 100%;
             min-height: 100px;
@@ -293,77 +276,70 @@
         }
         
         .post-content {
-            margin: 10px 0 5px 0;  /* Less margin, especially on bottom */
+            margin: 10px 0 5px 0;
             padding: 15px;
             line-height: 1.6;
             color: #333;
             font-size: 1.4em;
-            background: linear-gradient(135deg, #FFDAB9 0%, #FFE4B5 100%);  /* Peachy/warm tone different from comments */
+            background: linear-gradient(135deg, #FFDAB9 0%, #FFE4B5 100%);
             border-radius: 12px;
-            border: 2px solid #D2691E;  /* Darker border to distinguish from comments */
+            border: 2px solid #D2691E;
         }
         
-        /* REACTIONS */
         .reactions {
             display: flex;
             gap: 5px;
-            margin: 5px 0;  /* Minimal margin */
-            padding: 0;  /* No padding */
+            margin: 5px 0;
+            padding: 0;
             flex-wrap: wrap;
-            /* No border-top - reactions flow directly after content */
         }
         
         .reaction-btn {
             background: #FFF8DC;
-            border: 2px solid #CD853F;  /* Thinner border */
-            padding: 4px 8px;  /* Much smaller padding */
-            border-radius: 20px;  /* Less rounded */
+            border: 2px solid #CD853F;
+            padding: 4px 8px;
+            border-radius: 20px;
             cursor: pointer;
-            font-size: 0.9em;  /* Smaller emoji */
+            font-size: 0.9em;
             font-family: 'VT323', monospace;
             transition: all 0.2s;
-            box-shadow: 1px 1px 0px rgba(139, 69, 19, 0.2);  /* Subtle shadow */
+            box-shadow: 1px 1px 0px rgba(139, 69, 19, 0.2);
         }
         
         .reaction-btn:hover {
             background: #FFD700;
-            transform: scale(1.1);  /* Slight scale on hover */
+            transform: scale(1.1);
         }
         
         .reaction-btn.active {
             background: #00D9FF;
             color: white;
             border-color: #556B2F;
-            box-shadow: 2px 2px 0px #556B2F;  /* Slightly bigger when active */
+            box-shadow: 2px 2px 0px #556B2F;
             transform: scale(1.05);
         }
         
-        /* COMMENTS SECTION */
         .comments {
-            margin-top: 15px;  /* Reduced */
-            padding-top: 15px;  /* Reduced */
+            margin-top: 15px;
+            padding-top: 15px;
             border-top: 2px dashed #D2691E;
         }
         
-        /* 
-        COMMENT BUBBLES - Thread style stacking
-        Speech bubble style, stacked vertically like a conversation
-        */
         .comment {
             background: linear-gradient(135deg, #FFF8DC 0%, #FAEBD7 100%);
             padding: 10px 15px;
             border-radius: 15px 15px 15px 2px;
-            margin: 8px 0;  /* Reduced spacing between comments */
+            margin: 8px 0;
             border: 2px solid #D2691E;
             box-shadow: 2px 2px 0px rgba(0, 217, 255, 0.3);
-            max-width: 75%;  /* Narrower for thread look */
-            display: block;  /* Stack vertically */
+            max-width: 75%;
+            display: block;
         }
         
         .comment-header {
             font-family: 'Fredoka One', cursive;
             color: #8B4513;
-            font-size: 1em;  /* Smaller */
+            font-size: 1em;
             margin-bottom: 5px;
             display: flex;
             align-items: center;
@@ -372,20 +348,19 @@
         
         .comment-text {
             color: #333;
-            font-size: 1.2em;  /* Slightly smaller */
+            font-size: 1.2em;
             line-height: 1.4;
-            word-wrap: break-word;  /* Handle long words */
+            word-wrap: break-word;
         }
         
-        /* Delete button for comments - more compact */
         .comment-delete-btn {
             background: #D2691E;
             color: white;
             font-family: 'VT323', monospace;
-            font-size: 0.8em;  /* Smaller */
-            padding: 2px 8px;  /* More compact */
+            font-size: 0.8em;
+            padding: 2px 8px;
             border-radius: 8px;
-            border: 1px solid #8B4513;  /* Thinner border */
+            border: 1px solid #8B4513;
             cursor: pointer;
             transition: all 0.2s;
             box-shadow: 1px 1px 0px rgba(0, 0, 0, 0.2);
@@ -440,150 +415,6 @@
             font-family: 'Fredoka One', cursive;
         }
         
-        /* 
-        ============================================
-        NOTIFICATION BADGE
-        ============================================
-        Shows count of new activity in the header
-        */
-        .notification-badge {
-            position: relative;
-            display: inline-block;
-        }
-        
-        .notification-badge .badge {
-            position: absolute;
-            top: -10px;
-            right: -10px;
-            background: #FF6B35;  /* Bright orange for visibility */
-            color: white;
-            font-family: 'Press Start 2P', cursive;
-            font-size: 0.7em;
-            padding: 6px 10px;
-            border-radius: 50%;
-            min-width: 24px;
-            text-align: center;
-            box-shadow: 3px 3px 0px rgba(0, 0, 0, 0.3);
-            animation: pulse 2s infinite;
-            cursor: pointer;
-            z-index: 10;
-        }
-        
-        .notification-badge .badge:hover {
-            background: #FF8C61;
-            transform: scale(1.1);
-        }
-        
-        /* Pulse animation for notification badge */
-        @keyframes pulse {
-            0%, 100% {
-                transform: scale(1);
-            }
-            50% {
-                transform: scale(1.1);
-            }
-        }
-        
-        .notification-badge .badge.hidden {
-            display: none;
-        }
-        
-        /* Notification icon styling - Groovy text button */
-        .notification-icon {
-            font-family: 'Fredoka One', cursive;
-            font-size: 1em;
-            cursor: pointer;
-            transition: all 0.3s;
-            color: #FFD700;
-            background: #D2691E;
-            padding: 12px 20px;
-            border-radius: 20px;
-            box-shadow: 4px 4px 0px #00D9FF;
-            border: 3px solid #8B4513;
-            position: relative;
-            display: inline-block;
-            text-transform: lowercase;
-        }
-        
-        .notification-icon:hover {
-            transform: translate(2px, 2px);
-            box-shadow: 2px 2px 0px #00D9FF;
-        }
-        
-        .notification-icon:active {
-            transform: translate(4px, 4px);
-            box-shadow: 0px 0px 0px #00D9FF;
-        }
-        
-        /* Checkmark when notifications are enabled */
-        .notification-icon.enabled {
-            background: #556B2F;
-            color: #FFD700;
-        }
-        
-        .notification-icon.enabled::before {
-            content: '✓ ';
-            color: #00D9FF;
-        }
-        
-        /* Blocked state */
-        .notification-icon.blocked {
-            background: #8B4513;
-            opacity: 0.7;
-        }
-        
-        /* Decorative wavy divider */
-        .wavy-divider {
-            height: 15px;
-            background: 
-                radial-gradient(circle at 10px -5px, transparent 12px, #D2691E 13px, transparent 13px) repeat-x,
-                radial-gradient(circle at 10px 25px, transparent 12px, #D2691E 13px, transparent 13px) repeat-x;
-            background-size: 20px 20px;
-            background-position: 0px 0px, 10px 0px;
-            margin: 20px 0;
-            opacity: 0.3;
-        }
-        
-        /* Push notification toast */
-        .notification-toast {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background: rgba(255, 255, 255, 0.98);
-            padding: 20px 25px;
-            border-radius: 15px;
-            border: 3px solid #FFD700;
-            box-shadow: 6px 6px 0px #00D9FF, 0 10px 30px rgba(0,0,0,0.3);
-            max-width: 350px;
-            z-index: 10000;
-            font-family: 'VT323', monospace;
-            font-size: 1.3em;
-            animation: slideIn 0.3s ease-out;
-        }
-        
-        @keyframes slideIn {
-            from {
-                transform: translateX(400px);
-                opacity: 0;
-            }
-            to {
-                transform: translateX(0);
-                opacity: 1;
-            }
-        }
-        
-        .notification-toast .toast-title {
-            font-family: 'Fredoka One', cursive;
-            color: #D2691E;
-            font-size: 1.2em;
-            margin-bottom: 5px;
-        }
-        
-        .notification-toast .toast-body {
-            color: #333;
-        }
-        
-        /* Mobile responsive */
         @media (max-width: 768px) {
             body {
                 padding: 10px;
@@ -616,18 +447,11 @@
                 justify-content: center;
             }
             
-            /* Only make main action buttons full width, not small utility buttons */
             button:not(.reaction-btn):not(.post-action-btn):not(.comment-delete-btn) {
                 width: 100%;
                 margin: 5px 0;
             }
             
-            .notification-icon {
-                font-size: 0.85em;
-                padding: 10px 14px;
-            }
-            
-            /* Keep post action buttons inline on mobile */
             .post-header strong {
                 font-size: 1.3em;
             }
@@ -667,13 +491,6 @@
             .post-content {
                 font-size: 1.3em;
             }
-            
-            .notification-toast {
-                top: 10px;
-                right: 10px;
-                left: 10px;
-                max-width: none;
-            }
         }
     </style>
 </head>
@@ -702,13 +519,6 @@
                     <p>hey there, <span id="currentUser"></span>!</p>
                 </div>
                 <div style="display: flex; gap: 15px; align-items: center;">
-                    <!-- Notification button -->
-                    <div class="notification-badge">
-                        <button class="notification-icon" id="notificationMailbox" onclick="enableNotifications()" title="Click to enable notifications">
-                            notify me
-                        </button>
-                        <span id="notificationBadge" class="badge hidden" onclick="clearNotifications(); event.stopPropagation();">0</span>
-                    </div>
                     <button class="logout-btn" onclick="logout()">logout</button>
                 </div>
             </div>
@@ -731,8 +541,7 @@
     <!-- FIREBASE SETUP -->
     <script type="module">
         import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
-        import { getFirestore, collection, addDoc, getDocs, updateDoc, deleteDoc, doc, query, orderBy, onSnapshot, setDoc } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
-        import { getMessaging, getToken, onMessage } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-messaging.js';
+        import { getFirestore, collection, addDoc, getDocs, updateDoc, deleteDoc, doc, query, orderBy, onSnapshot } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
 
         const firebaseConfig = {
             apiKey: "AIzaSyBcLB4LtI3f7Xuxa4tMCxzcSG6Bi3XSaOI",
@@ -746,28 +555,17 @@
 
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
-        const messaging = getMessaging(app);
 
         window.db = db;
-        window.messaging = messaging;
         window.collection = collection;
         window.addDoc = addDoc;
         window.getDocs = getDocs;
         window.updateDoc = updateDoc;
         window.deleteDoc = deleteDoc;
         window.doc = doc;
-        window.setDoc = setDoc;
         window.query = query;
         window.orderBy = orderBy;
         window.onSnapshot = onSnapshot;
-        window.getToken = getToken;
-        window.onMessage = onMessage;
-
-        // Handle foreground notifications
-        onMessage(messaging, (payload) => {
-            console.log('Message received. ', payload);
-            showNotificationToast(payload.notification.title, payload.notification.body);
-        });
 
         window.onload = function() {
             const currentUser = localStorage.getItem('currentUser');
@@ -778,300 +576,6 @@
     </script>
 
     <script>
-        // ============================================
-        // PUSH NOTIFICATION FUNCTIONS
-        // ============================================
-        
-        /**
-         * Enable notifications when user clicks the button
-         * This is required for iOS - must be triggered by user interaction
-         */
-        async function enableNotifications() {
-            const notifyBtn = document.getElementById('notificationMailbox');
-            
-            // If already enabled, just show a message
-            if (notifyBtn.classList.contains('enabled')) {
-                showNotificationToast('Already Enabled!', 'Notifications are working!');
-                return;
-            }
-            
-            try {
-                const permission = await Notification.requestPermission();
-                
-                if (permission === 'granted') {
-                    console.log('Notification permission granted.');
-                    
-                    // Make sure service worker is registered first
-                    const registration = await navigator.serviceWorker.register('/snuketownusa/firebase-messaging-sw.js');
-                    console.log('Service Worker registered:', registration);
-                    
-                    // Wait a moment for service worker to activate
-                    await navigator.serviceWorker.ready;
-                    
-                    // Get FCM token
-                    const token = await getToken(messaging, {
-                        vapidKey: 'BI7vvfGRUjdlt39dnT8PilqZNHNRTTQ1BaQwemgWM295MxllyHEc49zQz3E5KyGr3hwAToK-XUXG-ab8opwihaA',
-                        serviceWorkerRegistration: registration
-                    });
-                    
-                    if (token) {
-                        console.log('FCM Token:', token);
-                        await saveTokenToDatabase(token);
-                        
-                        // Update button to show enabled state
-                        updateNotificationButtonState('granted');
-                        
-                        // Show success message
-                        showNotificationToast('Notifications Enabled!', 'You\'ll get updates when family posts, comments, or reacts.');
-                        
-                        return token;
-                    } else {
-                        console.log('No registration token available.');
-                        alert('Could not get notification token. Please try again.');
-                    }
-                } else {
-                    console.log('Notification permission denied.');
-                    updateNotificationButtonState('denied');
-                }
-            } catch (error) {
-                console.error('Error enabling notifications:', error);
-                alert('Error enabling notifications: ' + error.message);
-            }
-        }
-        
-        /**
-         * Update the notification button state based on permission
-         */
-        function updateNotificationButtonState(permission) {
-            const notifyBtn = document.getElementById('notificationMailbox');
-            
-            // Remove all state classes
-            notifyBtn.classList.remove('enabled', 'blocked');
-            
-            if (permission === 'granted') {
-                notifyBtn.classList.add('enabled');
-                notifyBtn.textContent = 'notifications on';
-                notifyBtn.title = 'Notifications enabled!';
-            } else if (permission === 'denied') {
-                notifyBtn.classList.add('blocked');
-                notifyBtn.textContent = 'notifications blocked';
-                notifyBtn.title = 'Notifications blocked - check browser settings';
-            } else {
-                // Default state
-                notifyBtn.textContent = 'notify me';
-                notifyBtn.title = 'Click to enable notifications';
-            }
-        }
-        
-        /**
-         * Request notification permission (checks status on page load)
-         */
-        async function requestNotificationPermission() {
-            // Check current permission status
-            const permission = Notification.permission;
-            
-            if (permission === 'granted') {
-                // Already granted, get token silently
-                try {
-                    // Make sure service worker is registered first
-                    const registration = await navigator.serviceWorker.register('/snuketownusa/firebase-messaging-sw.js');
-                    await navigator.serviceWorker.ready;
-                    
-                    const token = await getToken(messaging, {
-                        vapidKey: 'BI7vvfGRUjdlt39dnT8PilqZNHNRTTQ1BaQwemgWM295MxllyHEc49zQz3E5KyGr3hwAToK-XUXG-ab8opwihaA',
-                        serviceWorkerRegistration: registration
-                    });
-                    
-                    if (token) {
-                        await saveTokenToDatabase(token);
-                        updateNotificationButtonState('granted');
-                    }
-                } catch (error) {
-                    console.error('Error getting token:', error);
-                }
-            } else {
-                // Update button to show current state
-                updateNotificationButtonState(permission);
-            }
-        }
-        
-        /**
-         * Save FCM token to Firestore for this user
-         */
-        async function saveTokenToDatabase(token) {
-            const currentUser = getCurrentUser();
-            if (!currentUser) return;
-            
-            try {
-                await setDoc(doc(db, 'fcmTokens', currentUser), {
-                    token: token,
-                    updatedAt: new Date()
-                });
-                console.log('Token saved to database');
-            } catch (error) {
-                console.error('Error saving token:', error);
-            }
-        }
-        
-        /**
-         * Send push notification to a specific user
-         * DISABLED - Using Firestore triggers instead of Cloud Functions
-         */
-        /*
-        async function sendPushNotification(targetUsername, title, body, postId) {
-            try {
-                // Call your Cloud Function to send the notification
-                const response = await fetch('https://us-central1-snuketownusa.cloudfunctions.net/sendNotification', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        targetUsername: targetUsername,
-                        title: title,
-                        body: body,
-                        postId: postId
-                    })
-                });
-                
-                if (!response.ok) {
-                    console.error('Failed to send notification');
-                }
-            } catch (error) {
-                console.error('Error sending notification:', error);
-            }
-        }
-        */
-        
-        /**
-         * Show a toast notification in the app (for foreground messages)
-         */
-        function showNotificationToast(title, body) {
-            const toast = document.createElement('div');
-            toast.className = 'notification-toast';
-            toast.innerHTML = `
-                <div class="toast-title">${title}</div>
-                <div class="toast-body">${body}</div>
-            `;
-            
-            document.body.appendChild(toast);
-            
-            // Auto-remove after 5 seconds
-            setTimeout(() => {
-                toast.style.opacity = '0';
-                toast.style.transform = 'translateX(400px)';
-                setTimeout(() => toast.remove(), 300);
-            }, 5000);
-            
-            // Click to dismiss
-            toast.addEventListener('click', () => {
-                toast.style.opacity = '0';
-                toast.style.transform = 'translateX(400px)';
-                setTimeout(() => toast.remove(), 300);
-            });
-        }
-        
-        // 
-        // ============================================
-        // NOTIFICATION SYSTEM
-        // ============================================
-        // Tracks new posts, comments, and reactions since last visit
-        //
-        
-        /**
-         * Get the timestamp of when user last checked notifications
-         */
-        function getLastChecked() {
-            const lastChecked = localStorage.getItem(`lastChecked_${getCurrentUser()}`);
-            return lastChecked ? new Date(lastChecked) : new Date();
-        }
-        
-        /**
-         * Update the last checked timestamp to now
-         */
-        function updateLastChecked() {
-            localStorage.setItem(`lastChecked_${getCurrentUser()}`, new Date().toISOString());
-        }
-        
-        /**
-         * Clear notifications (mark as read)
-         * Called when clicking the notification badge
-         */
-        function clearNotifications() {
-            const badge = document.getElementById('notificationBadge');
-            const hasNotifications = badge && !badge.classList.contains('hidden');
-            
-            // Update the last checked timestamp
-            updateLastChecked();
-            
-            // Clear the badge if it exists
-            if (badge) {
-                badge.classList.add('hidden');
-                badge.textContent = '0';
-            }
-            
-            // Give user feedback with toast
-            if (hasNotifications) {
-                showNotificationToast('Caught up!', 'You\'re all up to date with family activity.');
-            }
-        }
-        
-        /**
-         * Count new activity since last check
-         * Called whenever posts are displayed
-         */
-        function countNewActivity(posts) {
-            const currentUser = getCurrentUser();
-            const lastChecked = getLastChecked();
-            let newCount = 0;
-            
-            posts.forEach(post => {
-                // Don't count your own posts
-                if (post.author === currentUser) {
-                    return;
-                }
-                
-                // Count new posts
-                if (post.timestamp?.toDate && post.timestamp.toDate() > lastChecked) {
-                    newCount++;
-                }
-                
-                // Count new reactions on your posts
-                if (post.author === currentUser && post.reactions) {
-                    Object.entries(post.reactions).forEach(([user, emoji]) => {
-                        if (user !== currentUser) {
-                            // We can't easily track when reactions were added without changing data structure
-                            // So we'll just count posts/comments for now
-                        }
-                    });
-                }
-                
-                // Count new comments
-                if (post.comments) {
-                    post.comments.forEach(comment => {
-                        // Don't count your own comments
-                        if (comment.author === currentUser) {
-                            return;
-                        }
-                        
-                        // Count comments on your posts OR replies to your comments
-                        if (post.author === currentUser && comment.timestamp?.toDate && comment.timestamp.toDate() > lastChecked) {
-                            newCount++;
-                        }
-                    });
-                }
-            });
-            
-            // Update badge
-            const badge = document.getElementById('notificationBadge');
-            if (newCount > 0) {
-                badge.textContent = newCount > 9 ? '9+' : newCount;
-                badge.classList.remove('hidden');
-            } else {
-                badge.classList.add('hidden');
-            }
-        }
-        
         function getCurrentUser() {
             return localStorage.getItem('currentUser');
         }
@@ -1168,14 +672,6 @@
             document.getElementById('mainApp').classList.remove('hidden');
             document.getElementById('currentUser').textContent = getCurrentUser();
             
-            // Initialize last checked if it doesn't exist
-            if (!localStorage.getItem(`lastChecked_${getCurrentUser()}`)) {
-                updateLastChecked();
-            }
-            
-            // Request notification permission
-            await requestNotificationPermission();
-            
             listenToPosts();
         }
         
@@ -1188,7 +684,7 @@
             }
             
             try {
-                const newPost = await addDoc(collection(db, 'posts'), {
+                await addDoc(collection(db, 'posts'), {
                     author: getCurrentUser(),
                     content: content,
                     timestamp: new Date(),
@@ -1197,9 +693,6 @@
                 });
                 
                 document.getElementById('newPostContent').value = '';
-                
-                // Notifications will be sent automatically via Firestore triggers
-                // No need for manual Cloud Function calls
                 
             } catch (error) {
                 console.error("Error creating post:", error);
@@ -1226,9 +719,6 @@
         function displayPosts(posts) {
             const feed = document.getElementById('feed');
             const currentUser = getCurrentUser();
-            
-            // Count new activity for notifications
-            countNewActivity(posts);
             
             feed.innerHTML = '';
             
@@ -1261,7 +751,6 @@
                 
                 let commentsHTML = '<div class="comments">';
                 (post.comments || []).forEach((comment, index) => {
-                    // Show delete button if: (1) you wrote the comment OR (2) it's your post
                     const canDelete = comment.author === currentUser || post.author === currentUser;
                     const deleteBtn = canDelete 
                         ? `<button class="comment-delete-btn" onclick="deleteComment('${post.id}', ${index})">delete</button>` 
@@ -1290,7 +779,6 @@
                     post.timestamp.toDate().toLocaleString() : 
                     'just now';
                 
-                // Add edit and delete buttons if this is the current user's post
                 const actionButtons = post.author === currentUser 
                     ? `<button class="post-action-btn edit-btn" onclick="editPost('${post.id}')">edit</button>
                        <button class="post-action-btn" onclick="deletePost('${post.id}')">delete</button>` 
@@ -1322,22 +810,16 @@
                 const postSnap = await getDocs(collection(db, 'posts'));
                 
                 let currentReactions = {};
-                let postAuthor = '';
                 postSnap.forEach((document) => {
                     if (document.id === postId) {
                         currentReactions = document.data().reactions || {};
-                        postAuthor = document.data().author;
                     }
                 });
                 
-                const wasActive = currentReactions[currentUser] === emoji;
-                
-                if (wasActive) {
+                if (currentReactions[currentUser] === emoji) {
                     delete currentReactions[currentUser];
                 } else {
                     currentReactions[currentUser] = emoji;
-                    
-                    // Notification will be sent automatically via Firestore triggers
                 }
                 
                 const postRef = doc(db, 'posts', postId);
@@ -1350,24 +832,12 @@
             }
         }
         
-        //
-        // ============================================
-        // EDIT POST FUNCTION
-        // ============================================
-        //
-        
-        /**
-         * EDIT A POST
-         * Allows user to edit their own post content
-         */
         async function editPost(postId) {
             const contentDiv = document.getElementById(`post-content-${postId}`);
             if (!contentDiv) return;
             
-            // Get current content
             const currentContent = contentDiv.textContent;
             
-            // Replace content div with textarea
             contentDiv.innerHTML = `
                 <textarea class="edit-textarea" id="edit-textarea-${postId}">${currentContent}</textarea>
                 <div class="edit-actions">
@@ -1376,14 +846,9 @@
                 </div>
             `;
             
-            // Focus the textarea
             document.getElementById(`edit-textarea-${postId}`).focus();
         }
         
-        /**
-         * SAVE EDITED POST
-         * Saves the edited content to Firebase
-         */
         async function saveEdit(postId) {
             const textarea = document.getElementById(`edit-textarea-${postId}`);
             const newContent = textarea.value.trim();
@@ -1400,19 +865,12 @@
                     edited: true,
                     editedAt: new Date()
                 });
-                
-                // Post will automatically update thanks to onSnapshot!
-                
             } catch (error) {
                 console.error("Error editing post:", error);
                 alert('error saving edit. please try again.');
             }
         }
         
-        /**
-         * CANCEL EDIT
-         * Restores original content without saving
-         */
         function cancelEdit(postId, originalContent) {
             const contentDiv = document.getElementById(`post-content-${postId}`);
             if (contentDiv) {
@@ -1420,18 +878,7 @@
             }
         }
         
-        //
-        // ============================================
-        // DELETE POST FUNCTION
-        // ============================================
-        //
-        
-        /**
-         * DELETE A POST
-         * Removes a post from Firebase (only works on your own posts)
-         */
         async function deletePost(postId) {
-            // Confirm before deleting
             if (!confirm('are you sure you want to delete this post?')) {
                 return;
             }
@@ -1439,25 +886,12 @@
             try {
                 const postRef = doc(db, 'posts', postId);
                 await deleteDoc(postRef);
-                
-                // Post will automatically disappear thanks to onSnapshot!
-                
             } catch (error) {
                 console.error("Error deleting post:", error);
                 alert('error deleting post. please try again.');
             }
         }
         
-        //
-        // ============================================
-        // COMMENT FUNCTIONS
-        // ============================================
-        //
-        
-        /**
-         * HANDLE ENTER KEY IN COMMENT INPUT
-         * Submit comment when user presses Enter
-         */
         function handleCommentKeyPress(event, postId) {
             if (event.key === 'Enter') {
                 event.preventDefault();
@@ -1465,10 +899,6 @@
             }
         }
         
-        /**
-         * ADD COMMENT
-         * Adds a new comment to a post
-         */
         async function addComment(postId, postAuthor) {
             const commentInput = document.getElementById(`comment-${postId}`);
             const commentText = commentInput.value.trim();
@@ -1487,10 +917,8 @@
                     }
                 });
                 
-                const currentUser = getCurrentUser();
-                
                 currentComments.push({
-                    author: currentUser,
+                    author: getCurrentUser(),
                     text: commentText,
                     timestamp: new Date()
                 });
@@ -1502,26 +930,17 @@
                 
                 commentInput.value = '';
                 
-                // Notification will be sent automatically via Firestore triggers
-                
             } catch (error) {
                 console.error("Error adding comment:", error);
             }
         }
         
-        /**
-         * DELETE COMMENT
-         * Removes a comment from a post
-         * Can delete if: (1) you wrote the comment OR (2) it's your post
-         */
         async function deleteComment(postId, commentIndex) {
-            // Confirm before deleting
             if (!confirm('delete this comment?')) {
                 return;
             }
             
             try {
-                // Get current comments for this post
                 const postSnap = await getDocs(collection(db, 'posts'));
                 
                 let currentComments = [];
@@ -1531,16 +950,12 @@
                     }
                 });
                 
-                // Remove the comment at the specified index
                 currentComments.splice(commentIndex, 1);
                 
-                // Update in Firebase
                 const postRef = doc(db, 'posts', postId);
                 await updateDoc(postRef, {
                     comments: currentComments
                 });
-                
-                // onSnapshot will automatically refresh the display!
                 
             } catch (error) {
                 console.error("Error deleting comment:", error);
